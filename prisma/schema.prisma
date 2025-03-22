@@ -1,0 +1,156 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Table
+model User {
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  password     String        // Nên mã hóa trước khi lưu
+  roleId       String
+  role         Role          @relation(fields: [roleId], references: [id])
+  cart         Cart?
+  orders       Order[]
+  addresses    Address[]
+  stockEntries StockEntry[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+// Role Table
+model Role {
+  id        String   @id @default(uuid())
+  name      String   @unique // Ví dụ: "ADMIN", "CUSTOMER"
+  users     User[]   // Quan hệ ngược với User
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Address Table (Shipping Address) - Đơn giản hóa
+model Address {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  street    String   // Đường phố
+  city      String   // Thành phố
+  country   String   // Quốc gia
+  orders    Order[]  // Quan hệ ngược với Order
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Watch Table (Product Details)
+model Watch {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  stock       Int          @default(0) // Cập nhật từ StockItem qua backend
+  material    String?      // Chất liệu: Thép không gỉ, Da, v.v.
+  movement    String?      // Bộ máy: Automatic, Quartz, v.v.
+  diameter    Float?       // Đường kính mặt (mm)
+  images      Image[]      // Hỗ trợ nhiều ảnh
+  stockItems  StockItem[]
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+// Image Table (Watch Images)
+model Image {
+  id        String   @id @default(uuid())
+  url       String   // Đường dẫn ảnh
+  watch     Watch    @relation(fields: [watchId], references: [id])
+  watchId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Cart Table (User Shopping Cart)
+model Cart {
+  id        String     @id @default(uuid())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String     @unique // Mỗi user chỉ có một giỏ hàng
+  items     CartItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+// Cart Item Table (Items in Cart)
+model CartItem {
+  id        String   @id @default(uuid())
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  cartId    String
+  watch     Watch    @relation(fields: [watchId], references: [id])
+  watchId   String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Stock Entry Table (Lưu thông tin nhập hàng)
+model StockEntry {
+  id        String      @id @default(uuid())
+  addedBy   User        @relation(fields: [addedById], references: [id])
+  addedById String
+  items     StockItem[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+// Stock Item Table (Chi tiết từng mặt hàng nhập)
+model StockItem {
+  id           String     @id @default(uuid())
+  stockEntry   StockEntry @relation(fields: [stockEntryId], references: [id])
+  stockEntryId String
+  watch        Watch      @relation(fields: [watchId], references: [id])
+  watchId      String
+  quantity     Int        @default(1)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+// Order Table
+model Order {
+  id          String      @id @default(uuid())
+  user        User        @relation(fields: [userId], references: [id])
+  userId      String
+  address     Address?    @relation(fields: [addressId], references: [id])
+  addressId   String?     // Liên kết với địa chỉ giao hàng
+  items       OrderItem[]
+  totalPrice  Float
+  status      OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+// Order Item Table
+model OrderItem {
+  id        String   @id @default(uuid())
+  order     Order    @relation(fields: [orderId], references: [id])
+  orderId   String
+  watch     Watch    @relation(fields: [watchId], references: [id])
+  watchId   String
+  quantity  Int      @default(1)
+  price     Float    // Giá tại thời điểm đặt hàng
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Enums for Order Status
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
+}
