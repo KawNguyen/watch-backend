@@ -34,25 +34,43 @@ model Role {
   updatedAt DateTime @updatedAt
 }
 
-// Address Table (Shipping Address) - Đơn giản hóa
+// Address Table (Shipping Address) 
 model Address {
   id        String   @id @default(uuid())
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   street    String   // Đường phố
+  ward      String   // Phường/Xã
   city      String   // Thành phố
   country   String   // Quốc gia
-  orders    Order[]  // Quan hệ ngược với Order
+  orders    Order[]  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// Brand Table
+model Brand {
+  id          String   @id @default(uuid())
+  code        String   @unique @default(dbgenerated("concat('BR', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 8)))"))
+  name        String   @unique @db.VarChar(100)
+  country     String?  @db.VarChar(100)
+  logo        String?  // URL của logo thương hiệu
+  watches     Watch[]  // Quan hệ với Watch
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([name])
 }
 
 // Watch Table (Product Details)
 model Watch {
   id          String       @id @default(uuid())
+  code        String       @unique @default(dbgenerated("concat('W', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 9)))"))
   name        String
   description String?
   price       Float
+  brandId     String      // Thêm trường này
+  brand       Brand       @relation(fields: [brandId], references: [id]) // Thêm relation
   stock       Int          @default(0) // Cập nhật từ StockItem qua backend
   material    String?      // Chất liệu: Thép không gỉ, Da, v.v.
   movement    String?      // Bộ máy: Automatic, Quartz, v.v.

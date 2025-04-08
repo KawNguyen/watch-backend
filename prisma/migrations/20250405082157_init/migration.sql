@@ -38,11 +38,26 @@ CREATE TABLE "Address" (
 );
 
 -- CreateTable
+CREATE TABLE "Brand" (
+    "id" TEXT NOT NULL,
+    "code" TEXT NOT NULL DEFAULT concat('BR', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 8))),
+    "name" VARCHAR(100) NOT NULL,
+    "country" VARCHAR(100),
+    "logo" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Brand_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Watch" (
     "id" TEXT NOT NULL,
+    "code" TEXT NOT NULL DEFAULT concat('W', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 9))),
     "name" TEXT NOT NULL,
     "description" TEXT,
     "price" DOUBLE PRECISION NOT NULL,
+    "brandId" TEXT NOT NULL,
     "stock" INTEGER NOT NULL DEFAULT 0,
     "material" TEXT,
     "movement" TEXT,
@@ -141,6 +156,18 @@ CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 CREATE UNIQUE INDEX "Role_name_key" ON "Role"("name");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Brand_code_key" ON "Brand"("code");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Brand_name_key" ON "Brand"("name");
+
+-- CreateIndex
+CREATE INDEX "Brand_name_idx" ON "Brand"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Watch_code_key" ON "Watch"("code");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Cart_userId_key" ON "Cart"("userId");
 
 -- AddForeignKey
@@ -148,6 +175,9 @@ ALTER TABLE "User" ADD CONSTRAINT "User_roleId_fkey" FOREIGN KEY ("roleId") REFE
 
 -- AddForeignKey
 ALTER TABLE "Address" ADD CONSTRAINT "Address_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Watch" ADD CONSTRAINT "Watch_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "Brand"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Image" ADD CONSTRAINT "Image_watchId_fkey" FOREIGN KEY ("watchId") REFERENCES "Watch"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
-import { WatchService } from '../services/watch.service';
+import { BrandService } from '../services/brand.service';
 
-const watchService = new WatchService();
+const brandService = new BrandService();
 
-export class WatchController {
+export class BrandController {
   async create(req: Request, res: Response) {
     try {
-      const watch = await watchService.create(req.body);
-      res.status(201).json(watch);
+      const brand = await brandService.create(req.body);
+      res.status(201).json(brand);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -15,8 +15,8 @@ export class WatchController {
 
   async findAll(req: Request, res: Response) {
     try {
-      const watches = await watchService.findAll();
-      res.json(watches);
+      const brands = await brandService.findAll();
+      res.json(brands);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -24,11 +24,11 @@ export class WatchController {
 
   async findOne(req: Request, res: Response) {
     try {
-      const watch = await watchService.findOne(req.params.id);
-      if (!watch) {
-        return res.status(404).json({ message: 'Watch not found' });
+      const brand = await brandService.findOne(req.params.id);
+      if (!brand) {
+        return res.status(404).json({ message: 'Brand not found' });
       }
-      res.json(watch);
+      res.json(brand);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -36,8 +36,8 @@ export class WatchController {
 
   async update(req: Request, res: Response) {
     try {
-      const watch = await watchService.update(req.params.id, req.body);
-      res.json(watch);
+      const brand = await brandService.update(req.params.id, req.body);
+      res.json(brand);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -45,7 +45,7 @@ export class WatchController {
 
   async delete(req: Request, res: Response) {
     try {
-      await watchService.delete(req.params.id);
+      await brandService.delete(req.params.id);
       res.status(204).send();
     } catch (error: any) {
       res.status(400).json({ message: error.message });

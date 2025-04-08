@@ -1,24 +1,58 @@
-import { stringify } from 'querystring';
-import prisma from '../config/database';
+import { PrismaClient } from '@prisma/client';
 
-const WatchService = {
-  create: async (data: any) => {
-    return await prisma.watch.create({ data });
-  },
-  getAll: async () => {
-    return await prisma.watch.findMany();
-  },
-  update: async ( id: string, data: any) => {
+const prisma = new PrismaClient();
+
+export class WatchService {
+  async create(data: any) {
+    const { images, ...watchData } = data;
+    
+    return await prisma.watch.create({
+      data: {
+        ...watchData,
+        images: {
+          create: images
+        }
+      },
+      include: {
+        brand: true,
+        images: true
+      }
+    });
+  }
+  
+  async findAll() {
+    return await prisma.watch.findMany({
+      include: {
+        brand: true,
+        images: true
+      }
+    });
+  }
+
+  async findOne(id: string) {
+    return await prisma.watch.findUnique({
+      where: { id },
+      include: {
+        brand: true,
+        images: true
+      }
+    });
+  }
+
+  async update(id: string, data: any) {
     return await prisma.watch.update({
-      where: { id: String(id) },
+      where: { id },
       data,
+      include: {
+        brand: true,
+        images: true
+      }
     });
-  },
-  delete: async (id: string) => {
-    return await prisma.watch.delete({
-      where: { id: String(id) },
-    });
-  },
-};
+  }
 
-export default WatchService;
+  async delete(id: string) {
+    return await prisma.watch.delete({
+      where: { id }
+    });
+  }
+}
