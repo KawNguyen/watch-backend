@@ -5,10 +5,14 @@ import { authMiddleware } from '../middlewares/auth.middleware';
 const watchRouter = Router();
 const watchController = new WatchController();
 
-watchRouter.get('/', watchController.findAll);
-watchRouter.get('/:id', watchController.findOne as any);
-watchRouter.post('/create', (authMiddleware as any), watchController.create);
-watchRouter.put('/update/:id', (authMiddleware as any), watchController.update);
-watchRouter.delete('/delete/:id',(authMiddleware as any), watchController.delete);
+// Public routes
+watchRouter.get('/', (req, res) => watchController.findAll(req, res));
+watchRouter.get('/:id', (req, res) => watchController.findOne(req, res) as any);
+
+// Protected routes
+watchRouter.use(authMiddleware as any);
+watchRouter.post('/create', (req, res) => watchController.create(req, res));
+watchRouter.put('/update/:id', (req, res) => watchController.update(req, res));
+watchRouter.delete('/delete/:id', (req, res) => watchController.delete(req, res));
 
 export default watchRouter;

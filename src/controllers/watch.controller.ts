@@ -4,15 +4,7 @@ import { WatchService } from '../services/watch.service';
 const watchService = new WatchService();
 
 export class WatchController {
-  async create(req: Request, res: Response) {
-    try {
-      const watch = await watchService.create(req.body);
-      res.status(201).json(watch);
-    } catch (error: any) {
-      res.status(400).json({ message: error.message });
-    }
-  }
-
+  // Public routes - no authentication needed
   async findAll(req: Request, res: Response) {
     try {
       const watches = await watchService.findAll();
@@ -31,6 +23,16 @@ export class WatchController {
       res.json(watch);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  }
+
+  // Protected routes - need authentication
+  async create(req: Request, res: Response) {
+    try {
+      const watch = await watchService.create(req.body);
+      res.status(201).json(watch);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
     }
   }
 
