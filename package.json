@@ -7,10 +7,10 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc && prisma generate",
-    "start": "node dist/index.js",
     "dev": "nodemon src/index.ts",
-    "postinstall": "tsc && prisma generate"
+    "build": "prisma generate",
+    "start": "ts-node src/index.ts",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
