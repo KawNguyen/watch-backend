@@ -16,8 +16,10 @@ dotenv.config();
 const apiType = "/v1/api"
 
 const app = express();
-app.use(cors(corsOptions));
+
+// Apply CORS middleware before any routes
 app.use(corsMiddleware as any);
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(`${apiType}/watches`, watchRouter);
 app.use(`${apiType}/brands`, brandRouter);
