@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import corsOptions from './config/cors.config';
 import watchRouter from './routes/watch.route';
 import brandRouter from './routes/brand.route';
 import authRouter from './routes/auth.routes';
@@ -15,7 +16,7 @@ dotenv.config();
 const apiType = "/v1/api"
 
 const app = express();
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(`${apiType}/watches`, watchRouter);
 app.use(`${apiType}/brands`, brandRouter);
