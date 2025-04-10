@@ -6,13 +6,12 @@ const watchRouter = Router();
 const watchController = new WatchController();
 
 // Public routes
-watchRouter.get('/', (req, res) => watchController.findAll(req, res));
-watchRouter.get('/:id', (req, res) => watchController.findOne(req, res) as any);
+watchRouter.get('/', watchController.findAll);
+watchRouter.get('/:id', watchController.findOne as any);
 
 // Protected routes
-watchRouter.use(authMiddleware as any);
-watchRouter.post('/create', (req, res) => watchController.create(req, res));
-watchRouter.put('/update/:id', (req, res) => watchController.update(req, res));
-watchRouter.delete('/delete/:id', (req, res) => watchController.delete(req, res));
+watchRouter.post('/', authMiddleware as any, (req, res) => watchController.create(req, res));
+watchRouter.put('/:id', authMiddleware as any, (req, res) => watchController.update(req, res));
+watchRouter.delete('/:id', authMiddleware as any, (req, res) => watchController.delete(req, res));
 
 export default watchRouter;
