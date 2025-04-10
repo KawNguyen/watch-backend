@@ -12,7 +12,6 @@ import orderRouter from './routes/order.route';
 import stockEntryRouter from './routes/stockEntry.route';
 
 dotenv.config();
-
 const apiType = "/v1/api"
 
 const app = express();
