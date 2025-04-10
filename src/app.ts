@@ -17,10 +17,17 @@ const apiType = "/v1/api"
 
 const app = express();
 
-// Apply CORS middleware before any routes
+// CORS and middleware
 app.use(corsMiddleware as any);
 app.use(cors(corsOptions));
 app.use(express.json());
+
+// Health check route
+app.get(`${apiType}/health`, (_req, res) => {
+  res.status(200).json({ status: 'OK' });
+});
+
+// API routes
 app.use(`${apiType}/watches`, watchRouter);
 app.use(`${apiType}/brands`, brandRouter);
 app.use(`${apiType}/auth`, authRouter);
@@ -29,9 +36,5 @@ app.use(`${apiType}/cart`, cartRouter);
 app.use(`${apiType}/orders`, orderRouter);
 app.use(`${apiType}/stock-entries`, stockEntryRouter);
 app.use(errorMiddleware);
-
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK' });
-});
 
 export default app;
