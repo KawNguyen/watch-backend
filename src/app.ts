@@ -10,12 +10,14 @@ import addressRouter from './routes/address.route';
 import cartRouter from './routes/cart.route';
 import orderRouter from './routes/order.route';
 import stockEntryRouter from './routes/stockEntry.route';
+import { corsMiddleware } from './middlewares/cors.middleware';
 
 dotenv.config();
 const apiType = "/v1/api"
 
 const app = express();
 app.use(cors(corsOptions));
+app.use(corsMiddleware as any);
 app.use(express.json());
 app.use(`${apiType}/watches`, watchRouter);
 app.use(`${apiType}/brands`, brandRouter);
