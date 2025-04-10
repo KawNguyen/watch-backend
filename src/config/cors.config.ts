@@ -1,23 +1,19 @@
-import { CorsOptions } from 'cors';
+import { CorsOptions } from "cors";
 
 const corsOptions: CorsOptions = {
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://watch-frontend-khoa.vercel.app'
-  ],
+  origin: "http://localhost:5173",
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
   allowedHeaders: [
-    'Content-Type', 
-    'Authorization', 
-    'Accept',
-    'Access-Control-Allow-Headers',
-    'Access-Control-Allow-Credentials'
+    "Content-Type",
+    "Authorization",
+    "Accept",
+    "Access-Control-Allow-Headers",
+    "Access-Control-Allow-Credentials",
   ],
-  exposedHeaders: ['Authorization'],
+  exposedHeaders: ["Authorization"],
   preflightContinue: false,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
 };
 
 export default corsOptions;
