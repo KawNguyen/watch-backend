@@ -22,11 +22,6 @@ app.use(corsMiddleware as any);
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Health check route
-app.get(`${apiType}/health`, (_req, res) => {
-  res.status(200).json({ status: 'OK' });
-});
-
 // API routes
 app.use(`${apiType}/watches`, watchRouter);
 app.use(`${apiType}/brands`, brandRouter);
