@@ -10,7 +10,7 @@ import addressRouter from './routes/address.route';
 import cartRouter from './routes/cart.route';
 import orderRouter from './routes/order.route';
 import stockEntryRouter from './routes/stockEntry.route';
-import { corsMiddleware } from './middlewares/cors.middleware';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 const apiType = "/v1/api"
@@ -18,8 +18,8 @@ const apiType = "/v1/api"
 const app = express();
 
 // CORS and middleware
-app.use(corsMiddleware as any);
-app.use(cors(corsOptions));
+app.use(cookieParser());
+app.use(cors(corsOptions as any));
 app.use(express.json());
 
 // API routes

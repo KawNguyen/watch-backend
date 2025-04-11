@@ -3,8 +3,13 @@ import jwt from 'jsonwebtoken';
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    // Check token from cookie first
+    const cookieToken = req.cookies.accessToken;
+    // Then check Authorization header
+    const headerToken = req.headers.authorization?.split(' ')[1];
     
+    const token = cookieToken || headerToken;
+
     if (!token) {
       return res.status(401).json({ message: 'No token provided' });
     }

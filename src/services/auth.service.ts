@@ -22,11 +22,7 @@ export class AuthService {
         name: (userData as any).name,
         email: userData.email,
         password: hashedPassword,
-        role: {
-          connect: {
-            name: "CUSTOMER"  
-          }
-        }
+        role: (userData as any).role,
       }
     });
 
@@ -49,7 +45,7 @@ export class AuthService {
     }
 
     const token = jwt.sign(
-      { userId: user.id, role: user.roleId },
+      { userId: user.id, role: user.role },
       process.env.JWT_SECRET as string,
       { expiresIn: '24h' }
     );

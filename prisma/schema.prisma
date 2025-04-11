@@ -9,29 +9,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User Table
+// Role Table
+enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+
 model User {
   id           String        @id @default(uuid())
   name         String
   email        String        @unique
-  password     String        // Nên mã hóa trước khi lưu
-  roleId       String
-  role         Role          @relation(fields: [roleId], references: [id])
+  password     String
+  avatar       String?       // Optional avatar URL
+  role         UserRole      @default(CUSTOMER)
   cart         Cart?
   orders       Order[]
   addresses    Address[]
   stockEntries StockEntry[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-}
-
-// Role Table
-model Role {
-  id        String   @id @default(uuid())
-  name      String   @unique // Ví dụ: "ADMIN", "CUSTOMER"
-  users     User[]   // Quan hệ ngược với User
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 // Address Table (Shipping Address) 

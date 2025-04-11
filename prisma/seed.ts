@@ -1,23 +1,34 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
+const SALT_ROUNDS = 10;
 
 async function main() {
-  // Create ADMIN role
-  await prisma.role.upsert({
-    where: { name: 'ADMIN' },
+  const hashedAdminPassword = await bcrypt.hash('admin123', SALT_ROUNDS);
+  const hashedCustomerPassword = await bcrypt.hash('customer123', SALT_ROUNDS);
+
+  // Create admin user
+  await prisma.user.upsert({
+    where: { email: 'admin@example.com' },
     update: {},
     create: {
-      name: 'ADMIN',
+      email: 'admin@example.com',
+      name: 'Admin',
+      password: hashedAdminPassword,
+      role: 'ADMIN',
     },
   });
 
-  // Create CUSTOMER role
-  await prisma.role.upsert({
-    where: { name: 'CUSTOMER' },
+  // Create customer user
+  await prisma.user.upsert({
+    where: { email: 'customer@example.com' },
     update: {},
     create: {
-      name: 'CUSTOMER',
+      email: 'customer@example.com',
+      name: 'Customer',
+      password: hashedCustomerPassword,
+      role: 'CUSTOMER'
     },
   });
 }
