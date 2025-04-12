@@ -15,12 +15,19 @@ enum UserRole {
   CUSTOMER
 }
 
+enum WatchGender {
+  MEN
+  WOMEN
+  UNISEX
+}
+
 model User {
   id           String        @id @default(uuid())
   name         String
   email        String        @unique
   password     String
   avatar       String?       // Optional avatar URL
+  phone        String?
   role         UserRole      @default(CUSTOMER)
   cart         Cart?
   orders       Order[]
@@ -60,23 +67,27 @@ model Brand {
 
 // Watch Table (Product Details)
 model Watch {
-  id          String       @id @default(uuid())
-  code        String       @unique @default(dbgenerated("concat('W', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 9)))"))
-  name        String
-  description String?
-  price       Float
-  brandId     String      // Thêm trường này
-  brand       Brand       @relation(fields: [brandId], references: [id]) // Thêm relation
-  stock       Int          @default(0) // Cập nhật từ StockItem qua backend
-  material    String?      // Chất liệu: Thép không gỉ, Da, v.v.
-  movement    String?      // Bộ máy: Automatic, Quartz, v.v.
-  diameter    Float?       // Đường kính mặt (mm)
-  images      Image[]      // Hỗ trợ nhiều ảnh
-  stockItems  StockItem[]
-  cartItems   CartItem[]
-  orderItems  OrderItem[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id              String       @id @default(uuid())
+  code            String       @unique @default(dbgenerated("concat('W', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 9)))"))
+  name            String       @db.VarChar(100)
+  description     String?      @db.Text
+  price           Float
+  gender          WatchGender  @default(UNISEX)
+  brandId         String      
+  brand           Brand        @relation(fields: [brandId], references: [id])
+  stock           Int          @default(0)
+  material        String?      @db.VarChar(50)  // Case material
+  bandMaterial    String?      @db.VarChar(50)
+  movement        String?      @db.VarChar(50)  // Automatic, Quartz, etc.
+  diameter        Float?       // in millimeters
+  waterResistance Int?         // in meters
+  warranty        Int          @default(24)     // in months
+  images          Image[]
+  stockItems      StockItem[]
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
 }
 
 // Image Table (Watch Images)

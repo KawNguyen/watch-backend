@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import { OrderService } from '../services/order.service';
-import { OrderStatus } from '@prisma/client';
+import { Request, Response } from "express";
+import { OrderService } from "../services/order.service";
+import { OrderStatus } from "@prisma/client";
 
 const orderService = new OrderService();
 
@@ -31,7 +31,7 @@ export class OrderController {
       const userId = (req as any).user.userId;
       const order = await orderService.findOne(req.params.id, userId);
       if (!order) {
-        return res.status(404).json({ message: 'Order not found' });
+        res.status(404).json({ message: "Order not found" });
       }
       res.json(order);
     } catch (error: any) {
@@ -43,7 +43,8 @@ export class OrderController {
     try {
       const { status } = req.body;
       if (!Object.values(OrderStatus).includes(status)) {
-        return res.status(400).json({ message: 'Invalid status' });
+        res.status(400).json({ message: "Invalid status" });
+        return;
       }
       const order = await orderService.updateStatus(req.params.id, status);
       res.json(order);

@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -9,10 +9,10 @@ export class CartService {
       include: {
         items: {
           include: {
-            watch: true
-          }
-        }
-      }
+            watch: true,
+          },
+        },
+      },
     });
 
     if (!cart) {
@@ -21,10 +21,10 @@ export class CartService {
         include: {
           items: {
             include: {
-              watch: true
-            }
-          }
-        }
+              watch: true,
+            },
+          },
+        },
       });
     }
 
@@ -33,19 +33,19 @@ export class CartService {
 
   async addItem(userId: string, watchId: string) {
     const cart = await this.getOrCreateCart(userId);
-    
+
     const existingItem = await prisma.cartItem.findFirst({
       where: {
         cartId: cart.id,
-        watchId
-      }
+        watchId,
+      },
     });
 
     if (existingItem) {
       return await prisma.cartItem.update({
         where: { id: existingItem.id },
         data: { quantity: existingItem.quantity + 1 },
-        include: { watch: true }
+        include: { watch: true },
       });
     }
 
@@ -53,9 +53,9 @@ export class CartService {
       data: {
         cartId: cart.id,
         watchId,
-        quantity: 1
+        quantity: 1,
       },
-      include: { watch: true }
+      include: { watch: true },
     });
   }
 
@@ -63,20 +63,20 @@ export class CartService {
     return await prisma.cartItem.update({
       where: { id: itemId },
       data: { quantity },
-      include: { watch: true }
+      include: { watch: true },
     });
   }
 
   async removeItem(itemId: string) {
     return await prisma.cartItem.delete({
-      where: { id: itemId }
+      where: { id: itemId },
     });
   }
 
   async clearCart(userId: string) {
     const cart = await this.getOrCreateCart(userId);
     await prisma.cartItem.deleteMany({
-      where: { cartId: cart.id }
+      where: { cartId: cart.id },
     });
     return cart;
   }

@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
-import { AuthService } from '../services/auth.service';
-import jwt from 'jsonwebtoken';
+import { Request, Response } from "express";
+import { AuthService } from "../services/auth.service";
+import jwt from "jsonwebtoken";
 
 const authService = new AuthService();
 
@@ -18,27 +18,32 @@ export class AuthController {
     try {
       const { email, password } = req.body;
       const loginResult = await authService.login({ email, password });
-      const token = jwt.sign({ id: loginResult.user.id }, process.env.JWT_SECRET as string, {
-        expiresIn: '24h'
-      });
+      const token = jwt.sign(
+        { id: loginResult.user.id },
+        process.env.JWT_SECRET as string,
+        {
+          expiresIn: "24h",
+        },
+      );
 
-      res.cookie('accessToken', token, {
+      res.cookie("accessToken", token, {
         httpOnly: true,
         secure: true,
-        sameSite: 'none',
-        maxAge: 24 * 60 * 60 * 1000
+        sameSite: "none",
+        maxAge: 24 * 60 * 60 * 1000,
       });
 
-      res.json({ 
-        message: 'Login successful',
+      res.json({
+        message: "Login successful",
         accessToken: token,
-        user: {   
+        user: {
           id: loginResult.user.id,
           email: loginResult.user.email,
           name: loginResult.user.name,
           role: loginResult.user.role,
-          avatar: loginResult.user.avatar
-        }
+          avatar: loginResult.user.avatar,
+          phone: loginResult.user.phone,
+        },
       });
     } catch (error: any) {
       res.status(401).json({ message: error.message });
@@ -47,13 +52,13 @@ export class AuthController {
 
   async logout(req: Request, res: Response) {
     try {
-      res.clearCookie('accessToken', {
+      res.clearCookie("accessToken", {
         httpOnly: true,
         secure: true,
-        sameSite: 'none'
+        sameSite: "none",
       });
-      
-      res.json({ message: 'Logout successful' });
+
+      res.json({ message: "Logout successful" });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

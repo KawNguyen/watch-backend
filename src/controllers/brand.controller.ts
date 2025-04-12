@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { BrandService } from '../services/brand.service';
+import { Request, Response } from "express";
+import { BrandService } from "../services/brand.service";
 
 const brandService = new BrandService();
 
@@ -26,7 +26,8 @@ export class BrandController {
     try {
       const brand = await brandService.findOne(req.params.id);
       if (!brand) {
-        return res.status(404).json({ message: 'Brand not found' });
+        res.status(404).json({ message: "Brand not found" });
+        return;
       }
       res.json(brand);
     } catch (error: any) {
@@ -51,4 +52,5 @@ export class BrandController {
       res.status(400).json({ message: error.message });
     }
   }
+
 }

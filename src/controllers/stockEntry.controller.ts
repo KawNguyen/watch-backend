@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { StockEntryService } from '../services/stockEntry.service';
+import { Request, Response } from "express";
+import { StockEntryService } from "../services/stockEntry.service";
 
 const stockEntryService = new StockEntryService();
 
@@ -28,7 +28,8 @@ export class StockEntryController {
     try {
       const entry = await stockEntryService.findOne(req.params.id);
       if (!entry) {
-        return res.status(404).json({ message: 'Stock entry not found' });
+        res.status(404).json({ message: "Stock entry not found" });
+        return;
       }
       res.json(entry);
     } catch (error: any) {

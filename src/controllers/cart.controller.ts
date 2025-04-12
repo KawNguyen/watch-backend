@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { CartService } from '../services/cart.service';
+import { Request, Response } from "express";
+import { CartService } from "../services/cart.service";
 
 const cartService = new CartService();
 
@@ -28,7 +28,10 @@ export class CartController {
   async updateQuantity(req: Request, res: Response) {
     try {
       const { quantity } = req.body;
-      const cartItem = await cartService.updateQuantity(req.params.itemId, quantity);
+      const cartItem = await cartService.updateQuantity(
+        req.params.itemId,
+        quantity,
+      );
       res.json(cartItem);
     } catch (error: any) {
       res.status(400).json({ message: error.message });

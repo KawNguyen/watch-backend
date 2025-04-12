@@ -1,4 +1,4 @@
-import { PrismaClient, OrderStatus } from '@prisma/client';
+import { PrismaClient, OrderStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -8,18 +8,18 @@ export class OrderService {
       where: { userId },
       include: {
         items: {
-          include: { watch: true }
-        }
-      }
+          include: { watch: true },
+        },
+      },
     });
 
     if (!cart || cart.items.length === 0) {
-      throw new Error('Giỏ hàng trống');
+      throw new Error("Giỏ hàng trống");
     }
 
     // Tính tổng tiền và tạo order items trong cùng một transaction
     const totalPrice = cart.items.reduce((total, item) => {
-      return total + (item.watch.price * item.quantity);
+      return total + item.watch.price * item.quantity;
     }, 0);
 
     // Tạo order và order items trong một transaction
@@ -32,24 +32,24 @@ export class OrderService {
           totalPrice,
           status: OrderStatus.PENDING,
           items: {
-            create: cart.items.map(item => ({
+            create: cart.items.map((item) => ({
               watchId: item.watchId,
               quantity: item.quantity,
-              price: item.watch.price
-            }))
-          }
+              price: item.watch.price,
+            })),
+          },
         },
         include: {
           items: {
-            include: { watch: true }
+            include: { watch: true },
           },
-          address: true
-        }
+          address: true,
+        },
       });
 
       // Xóa cart items sau khi tạo order
       await tx.cartItem.deleteMany({
-        where: { cartId: cart.id }
+        where: { cartId: cart.id },
       });
 
       return newOrder;
@@ -63,26 +63,26 @@ export class OrderService {
       where: { userId },
       include: {
         items: {
-          include: { watch: true }
+          include: { watch: true },
         },
-        address: true
+        address: true,
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: "desc" },
     });
   }
 
   async findOne(id: string, userId: string) {
     return await prisma.order.findFirst({
-      where: { 
+      where: {
         id,
-        userId 
+        userId,
       },
       include: {
         items: {
-          include: { watch: true }
+          include: { watch: true },
         },
-        address: true
-      }
+        address: true,
+      },
     });
   }
 
@@ -92,10 +92,10 @@ export class OrderService {
       data: { status },
       include: {
         items: {
-          include: { watch: true }
+          include: { watch: true },
         },
-        address: true
-      }
+        address: true,
+      },
     });
   }
 }

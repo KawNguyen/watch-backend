@@ -2,6 +2,9 @@
 CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'CUSTOMER');
 
 -- CreateEnum
+CREATE TYPE "WatchGender" AS ENUM ('MEN', 'WOMEN', 'UNISEX');
+
+-- CreateEnum
 CREATE TYPE "OrderStatus" AS ENUM ('PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELED');
 
 -- CreateTable
@@ -11,6 +14,7 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "avatar" TEXT,
+    "phone" TEXT,
     "role" "UserRole" NOT NULL DEFAULT 'CUSTOMER',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -49,14 +53,18 @@ CREATE TABLE "Brand" (
 CREATE TABLE "Watch" (
     "id" TEXT NOT NULL,
     "code" TEXT NOT NULL DEFAULT concat('W', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 9))),
-    "name" TEXT NOT NULL,
+    "name" VARCHAR(100) NOT NULL,
     "description" TEXT,
     "price" DOUBLE PRECISION NOT NULL,
+    "gender" "WatchGender" NOT NULL DEFAULT 'UNISEX',
     "brandId" TEXT NOT NULL,
     "stock" INTEGER NOT NULL DEFAULT 0,
-    "material" TEXT,
-    "movement" TEXT,
+    "material" VARCHAR(50),
+    "bandMaterial" VARCHAR(50),
+    "movement" VARCHAR(50),
     "diameter" DOUBLE PRECISION,
+    "waterResistance" INTEGER,
+    "warranty" INTEGER NOT NULL DEFAULT 24,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

@@ -1,18 +1,18 @@
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { IUserLogin, IUserRegister } from '../@types/user.types';
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { IUserLogin, IUserRegister } from "../@types/user.types";
 
 const prisma = new PrismaClient();
 
 export class AuthService {
   async register(userData: IUserRegister) {
     const existingUser = await prisma.user.findUnique({
-      where: { email: userData.email }
+      where: { email: userData.email },
     });
 
     if (existingUser) {
-      throw new Error('Email already exists');
+      throw new Error("Email already exists");
     }
 
     const hashedPassword = await bcrypt.hash(userData.password, 10);
@@ -23,7 +23,7 @@ export class AuthService {
         email: userData.email,
         password: hashedPassword,
         role: (userData as any).role,
-      }
+      },
     });
 
     return { ...user, password: undefined };
@@ -31,23 +31,26 @@ export class AuthService {
 
   async login(credentials: IUserLogin) {
     const user = await prisma.user.findUnique({
-      where: { email: credentials.email }
+      where: { email: credentials.email },
     });
 
     if (!user) {
-      throw new Error('Invalid credentials');
+      throw new Error("Invalid credentials");
     }
 
-    const isValidPassword = await bcrypt.compare(credentials.password, user.password);
+    const isValidPassword = await bcrypt.compare(
+      credentials.password,
+      user.password,
+    );
 
     if (!isValidPassword) {
-      throw new Error('Invalid credentials');
+      throw new Error("Invalid credentials");
     }
 
     const token = jwt.sign(
       { userId: user.id, role: user.role },
       process.env.JWT_SECRET as string,
-      { expiresIn: '24h' }
+      { expiresIn: "24h" },
     );
 
     return { token, user: { ...user, password: undefined } };

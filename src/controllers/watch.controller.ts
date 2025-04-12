@@ -1,10 +1,9 @@
-import { Request, Response } from 'express';
-import { WatchService } from '../services/watch.service';
+import { Request, Response } from "express";
+import { WatchService } from "../services/watch.service";
 
 const watchService = new WatchService();
 
 export class WatchController {
-  // Public routes - no authentication needed
   async findAll(req: Request, res: Response) {
     try {
       const watches = await watchService.findAll();
@@ -18,7 +17,8 @@ export class WatchController {
     try {
       const watch = await watchService.findOne(req.params.id);
       if (!watch) {
-        return res.status(404).json({ message: 'Watch not found' });
+        res.status(404).json({ message: "Watch not found" });
+        return;
       }
       res.json(watch);
     } catch (error: any) {
@@ -26,7 +26,6 @@ export class WatchController {
     }
   }
 
-  // Protected routes - need authentication
   async create(req: Request, res: Response) {
     try {
       const watch = await watchService.create(req.body);

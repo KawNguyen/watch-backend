@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { AddressService } from '../services/address.service';
+import { Request, Response } from "express";
+import { AddressService } from "../services/address.service";
 
 const addressService = new AddressService();
 
@@ -28,7 +28,8 @@ export class AddressController {
     try {
       const address = await addressService.findOne(req.params.id);
       if (!address) {
-        return res.status(404).json({ message: 'Address not found' });
+        res.status(404).json({ message: "Address not found" });
+        return;
       }
       res.json(address);
     } catch (error: any) {

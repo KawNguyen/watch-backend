@@ -1,32 +1,35 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export class StockEntryService {
-  async create(addedById: string, items: { watchId: string; quantity: number }[]) {
+  async create(
+    addedById: string,
+    items: { watchId: string; quantity: number }[],
+  ) {
     return await prisma.$transaction(async (tx) => {
       // Create stock entry with items in a single transaction
       const stockEntry = await tx.stockEntry.create({
         data: {
           addedById,
           items: {
-            create: items.map(item => ({
+            create: items.map((item) => ({
               watchId: item.watchId,
-              quantity: item.quantity
-            }))
-          }
+              quantity: item.quantity,
+            })),
+          },
         },
         include: {
           items: {
-            include: { watch: true }
+            include: { watch: true },
           },
           addedBy: {
             select: {
               name: true,
-              email: true
-            }
-          }
-        }
+              email: true,
+            },
+          },
+        },
       });
 
       // Update watch stock quantities
@@ -35,9 +38,9 @@ export class StockEntryService {
           where: { id: item.watchId },
           data: {
             stock: {
-              increment: item.quantity
-            }
-          }
+              increment: item.quantity,
+            },
+          },
         });
       }
 
@@ -49,16 +52,16 @@ export class StockEntryService {
     return await prisma.stockEntry.findMany({
       include: {
         items: {
-          include: { watch: true }
+          include: { watch: true },
         },
         addedBy: {
           select: {
             name: true,
-            email: true
-          }
-        }
+            email: true,
+          },
+        },
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: "desc" },
     });
   }
 
@@ -67,15 +70,15 @@ export class StockEntryService {
       where: { id },
       include: {
         items: {
-          include: { watch: true }
+          include: { watch: true },
         },
         addedBy: {
           select: {
             name: true,
-            email: true
-          }
-        }
-      }
+            email: true,
+          },
+        },
+      },
     });
   }
 
@@ -88,13 +91,13 @@ export class StockEntryService {
             addedBy: {
               select: {
                 name: true,
-                email: true
-              }
-            }
-          }
-        }
+                email: true,
+              },
+            },
+          },
+        },
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: "desc" },
     });
   }
 }

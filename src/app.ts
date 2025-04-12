@@ -1,19 +1,19 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import corsOptions from './config/cors.config';
-import watchRouter from './routes/watch.route';
-import brandRouter from './routes/brand.route';
-import authRouter from './routes/auth.routes';
-import errorMiddleware from './middlewares/error.middleware';
-import addressRouter from './routes/address.route';
-import cartRouter from './routes/cart.route';
-import orderRouter from './routes/order.route';
-import stockEntryRouter from './routes/stockEntry.route';
-import cookieParser from 'cookie-parser';
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import corsOptions from "./config/cors.config";
+import watchRouter from "./routes/watch.route";
+import brandRouter from "./routes/brand.route";
+import authRouter from "./routes/auth.routes";
+import errorMiddleware from "./middlewares/error.middleware";
+import addressRouter from "./routes/address.route";
+import cartRouter from "./routes/cart.route";
+import orderRouter from "./routes/order.route";
+import stockEntryRouter from "./routes/stockEntry.route";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
-const apiType = "/v1/api"
+const apiType = "/v1/api";
 
 const app = express();
 
