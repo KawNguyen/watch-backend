@@ -5,10 +5,15 @@ const prisma = new PrismaClient();
 
 export const adminMiddleware = async (req: Request, res: Response, next: NextFunction):Promise<void> => {
   try {
-    const userId = (req as any).user.id;
+    // Add debug logs to check the request object
+    console.log('Request user:', (req as any).user);
+    console.log('Request headers:', req.headers);
+
+    const userId = (req as any).user?.id;
 
     if (!userId) {
-      res.status(403).json({ message: 'Access denied' });
+      console.log('No user ID found in request');
+      res.status(403).json({ message: 'Access denied - No user ID' });
       return;
     }
 
@@ -16,14 +21,24 @@ export const adminMiddleware = async (req: Request, res: Response, next: NextFun
       where: { id: userId }
     });
 
-    if (user?.role !== 'ADMIN') {
-      res.status(403).json({ message: 'Access denied. Admin rights required.' });
-      return
+    console.log('Found user:', user);
+
+    if (!user) {
+      console.log('No user found in database');
+      res.status(403).json({ message: 'Access denied - User not found' });
+      return;
+    }
+
+    if (user.role !== 'ADMIN') {
+      console.log(`User role: ${user.role}`);
+      res.status(403).json({ message: `Access denied. Admin rights required. Current role: ${user.role}` });
+      return;
     }
 
     next();
   } catch (error) {
-    res.status(403).json({ message: 'Access denied' });
+    console.error('Admin middleware error:', error);
+    res.status(403).json({ message: 'Access denied - Server error' });
     return;
   }
 };

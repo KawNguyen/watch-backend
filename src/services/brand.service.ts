@@ -12,8 +12,14 @@ export class BrandService {
   async findAll() {
     return await prisma.brand.findMany({
       include: {
-        watches: true,
-      },
+        watches: {
+          include: {
+            material: true,
+            bandMaterial: true,
+            movement: true
+          }
+        }
+      }
     });
   }
 

@@ -57,7 +57,7 @@ model Brand {
   code        String   @unique @default(dbgenerated("concat('BR', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 8)))"))
   name        String   @unique @db.VarChar(100)
   country     String?  @db.VarChar(100)
-  logo        String?  // URL của logo thương hiệu
+  logo        String?  
   watches     Watch[]  // Quan hệ với Watch
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -65,7 +65,43 @@ model Brand {
   @@index([name])
 }
 
-// Watch Table (Product Details)
+// Material Table (Case Materials)
+model Material {
+  id        String   @id @default(uuid())
+  code      String   @unique @default(dbgenerated("concat('MT', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 8)))"))
+  name      String   @unique
+  watches   Watch[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+// Band Material Table
+model BandMaterial {
+  id        String   @id @default(uuid())
+  code      String   @unique @default(dbgenerated("concat('BM', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 8)))"))
+  name      String   @unique
+  watches   Watch[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+// Movement Table
+model Movement {
+  id        String   @id @default(uuid())
+  code      String   @unique @default(dbgenerated("concat('MV', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 8)))"))
+  name      String   @unique
+  watches   Watch[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
+
+// Update Watch model to use relations
 model Watch {
   id              String       @id @default(uuid())
   code            String       @unique @default(dbgenerated("concat('W', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 9)))"))
@@ -75,12 +111,15 @@ model Watch {
   gender          WatchGender  @default(UNISEX)
   brandId         String      
   brand           Brand        @relation(fields: [brandId], references: [id])
+  materialId      String?
+  material        Material?    @relation(fields: [materialId], references: [id])
+  bandMaterialId  String?
+  bandMaterial    BandMaterial? @relation(fields: [bandMaterialId], references: [id])
+  movementId      String?
+  movement        Movement?    @relation(fields: [movementId], references: [id])
   stock           Int          @default(0)
-  material        String?      @db.VarChar(50)  // Case material
-  bandMaterial    String?      @db.VarChar(50)
-  movement        String?      @db.VarChar(50)  // Automatic, Quartz, etc.
   diameter        Float?       // in millimeters
-  waterResistance Int?         // in meters
+  waterResistance Int?        // in meters
   warranty        Int          @default(24)     // in months
   images          Image[]
   stockItems      StockItem[]

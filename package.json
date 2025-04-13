@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/user.seed.ts",
+    "material-seed": "ts-node prisma/seeds/material.seed.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

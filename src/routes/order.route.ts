@@ -7,15 +7,9 @@ const orderController = new OrderController();
 
 orderRouter.use(authMiddleware);
 
-orderRouter.post("/create", (req, res) => orderController.create(req, res));
-orderRouter.get("/", (req, res) => orderController.getOrders(req, res));
-orderRouter.get(
-  "/:id",
-  (req, res) => orderController.getOrder(req, res),
-);
-orderRouter.put(
-  "/status/:id",
-  (req, res) => orderController.updateStatus(req, res),
-);
+orderRouter.post("/create", orderController.create);
+orderRouter.get("/", orderController.getOrders);
+orderRouter.get("/:id", orderController.getOrder);
+orderRouter.put("/status/:id", orderController.updateStatus);
 
 export default orderRouter;

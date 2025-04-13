@@ -10,6 +10,8 @@ import addressRouter from "./routes/address.route";
 import cartRouter from "./routes/cart.route";
 import orderRouter from "./routes/order.route";
 import stockEntryRouter from "./routes/stockEntry.route";
+import materialRouter from "./routes/material.route";
+import bandMaterialRouter from "./routes/bandMaterial.route";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -30,6 +32,8 @@ app.use(`${apiType}/addresses`, addressRouter);
 app.use(`${apiType}/cart`, cartRouter);
 app.use(`${apiType}/orders`, orderRouter);
 app.use(`${apiType}/stock-entries`, stockEntryRouter);
+app.use(`${apiType}/materials`, materialRouter);
+app.use(`${apiType}/band-materials`, bandMaterialRouter);
 app.use(errorMiddleware);
 
 export default app;
