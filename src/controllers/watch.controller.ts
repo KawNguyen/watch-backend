@@ -4,14 +4,44 @@ import { WatchService } from "../services/watch.service";
 const watchService = new WatchService();
 
 export class WatchController {
-  async findAll(req: Request, res: Response) {
+  async search(req: Request, res: Response) {
     try {
-      const watches = await watchService.findAll();
-      res.json(watches);
+      const {
+        name,
+        minPrice,
+        maxPrice,
+        brandId,
+        gender,
+        page,
+        pageSize
+      } = req.query;
+
+      const result = await watchService.search({
+        name: name as string,
+        minPrice: minPrice ? parseFloat(minPrice as string) : undefined,
+        maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined,
+        brandId: brandId as string,
+        gender: gender as string,
+        page: page ? parseInt(page as string) : undefined,
+        pageSize: pageSize ? parseInt(pageSize as string) : undefined,
+      });
+
+      res.json(result);
     } catch (error: any) {
-      res.status(500).json({ message: error.message });
+      res.status(500).json({ message: "Error searching watches", error: error.message });
     }
   }
+
+  findAll = async (req: Request, res: Response) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 10;
+      const result = await watchService.findAll(page, pageSize);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching watches", error });
+    }
+  };
 
   async findOne(req: Request, res: Response) {
     try {

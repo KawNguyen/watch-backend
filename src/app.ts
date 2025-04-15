@@ -12,6 +12,7 @@ import orderRouter from "./routes/order.route";
 import stockEntryRouter from "./routes/stockEntry.route";
 import materialRouter from "./routes/material.route";
 import bandMaterialRouter from "./routes/bandMaterial.route";
+import movementRouter from "./routes/movement.route";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
@@ -34,6 +35,7 @@ app.use(`${apiType}/orders`, orderRouter);
 app.use(`${apiType}/stock-entries`, stockEntryRouter);
 app.use(`${apiType}/materials`, materialRouter);
 app.use(`${apiType}/band-materials`, bandMaterialRouter);
+app.use(`${apiType}/movements`, movementRouter);
 app.use(errorMiddleware);
 
 export default app;
