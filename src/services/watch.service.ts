@@ -1,14 +1,15 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, WatchGender } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE_SIZE = 20;
 
 export class WatchService {
   async create(data: any) {
-    const { images, ...watchData } = data;
+    const { images, gender, ...watchData } = data;
     return await prisma.watch.create({
       data: {
         ...watchData,
+        gender: gender as WatchGender,
         images: {
           create: images,
         },
@@ -55,8 +56,21 @@ export class WatchService {
   async findOne(id: string) {
     return await prisma.watch.findUnique({
       where: { id },
-      include: {
+      select: {
+        id: true,
+        code: true,
+        name:true,
         brand: true,
+        bandMaterial: true,
+        material: true,
+        movement: true,
+        description: true,
+        gender: true,
+        diameter: true,
+        warranty: true,
+        waterResistance: true,
+        stock: true,
+        price: true,
         images: true,
       },
     });
@@ -68,12 +82,21 @@ export class WatchService {
       data,
       include: {
         brand: true,
+        material: true,
+        bandMaterial: true,
+        movement: true,
         images: true,
       },
     });
   }
 
   async delete(id: string) {
+    // Delete all related images first
+    await prisma.image.deleteMany({
+      where: { watchId: id }
+    });
+
+    // Then delete the watch
     return await prisma.watch.delete({
       where: { id },
     });
