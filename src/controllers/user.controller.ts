@@ -1,5 +1,5 @@
-import { Request, Response } from 'express';
-import { UserService } from '../services/user.service';
+import { Request, Response } from "express";
+import { UserService } from "../services/user.service";
 
 const userService = new UserService();
 
@@ -38,7 +38,7 @@ export class UserController {
     try {
       const { id } = req.params;
       await userService.deleteUser(id);
-      res.json({ message: 'User deleted successfully' });
+      res.json({ message: "User deleted successfully" });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

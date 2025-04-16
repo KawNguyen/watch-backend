@@ -16,10 +16,10 @@ export class BrandService {
           include: {
             material: true,
             bandMaterial: true,
-            movement: true
-          }
-        }
-      }
+            movement: true,
+          },
+        },
+      },
     });
   }
 

@@ -12,13 +12,13 @@ brandRouter.post(
   "/create",
   authMiddleware,
   adminMiddleware,
-  brandController.create
+  brandController.create,
 );
 brandRouter.put(
   "/update/:id",
   authMiddleware,
   adminMiddleware,
-  brandController.update
+  brandController.update,
 );
 brandRouter.delete("/delete/:id", authMiddleware, brandController.delete);
 

@@ -6,15 +6,8 @@ const watchService = new WatchService();
 export class WatchController {
   async search(req: Request, res: Response) {
     try {
-      const {
-        name,
-        minPrice,
-        maxPrice,
-        brandId,
-        gender,
-        page,
-        pageSize
-      } = req.query;
+      const { name, minPrice, maxPrice, brandId, gender, page, pageSize } =
+        req.query;
 
       const result = await watchService.search({
         name: name as string,
@@ -28,7 +21,9 @@ export class WatchController {
 
       res.json(result);
     } catch (error: any) {
-      res.status(500).json({ message: "Error searching watches", error: error.message });
+      res
+        .status(500)
+        .json({ message: "Error searching watches", error: error.message });
     }
   }
 

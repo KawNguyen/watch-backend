@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -13,8 +13,8 @@ export class UserService {
         avatar: true,
         createdAt: true,
         updatedAt: true,
-        password: false
-      }
+        password: false,
+      },
     });
   }
 
@@ -29,12 +29,12 @@ export class UserService {
         avatar: true,
         createdAt: true,
         updatedAt: true,
-        password: false
-      }
+        password: false,
+      },
     });
 
     if (!user) {
-      throw new Error('User not found');
+      throw new Error("User not found");
     }
     return user;
   }
@@ -52,14 +52,14 @@ export class UserService {
         updatedAt: true,
         phone: true,
         addresses: true,
-        password: false
-      }
+        password: false,
+      },
     });
   }
 
   async deleteUser(id: string) {
     return await prisma.user.delete({
-      where: { id }
+      where: { id },
     });
   }
 }

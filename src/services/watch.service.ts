@@ -36,20 +36,20 @@ export class WatchService {
           images: true,
         },
         orderBy: {
-          createdAt: 'desc'
-        }
+          createdAt: "desc",
+        },
       }),
-      prisma.watch.count()
+      prisma.watch.count(),
     ]);
 
     return {
-      items: watches,  // Changed from 'data' to 'items'
+      items: watches, // Changed from 'data' to 'items'
       meta: {
         total,
         page,
         lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize
-      }
+        itemsPerPage: pageSize,
+      },
     };
   }
 
@@ -59,7 +59,7 @@ export class WatchService {
       select: {
         id: true,
         code: true,
-        name:true,
+        name: true,
         brand: true,
         bandMaterial: true,
         material: true,
@@ -93,7 +93,7 @@ export class WatchService {
   async delete(id: string) {
     // Delete all related images first
     await prisma.image.deleteMany({
-      where: { watchId: id }
+      where: { watchId: id },
     });
 
     // Then delete the watch
@@ -128,7 +128,7 @@ export class WatchService {
     if (name) {
       where.name = {
         contains: name,
-        mode: 'insensitive',
+        mode: "insensitive",
       };
     }
 
@@ -156,14 +156,14 @@ export class WatchService {
           images: true,
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
       }),
       prisma.watch.count({ where }),
     ]);
 
     return {
-      items: watches,  // Changed from 'data' to 'items'
+      items: watches, // Changed from 'data' to 'items'
       meta: {
         total,
         page,

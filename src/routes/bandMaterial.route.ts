@@ -8,8 +8,23 @@ const bandMaterialController = new BandMaterialController();
 
 bandMaterialRouter.get("/", bandMaterialController.findAll);
 bandMaterialRouter.get("/:id", bandMaterialController.findOne);
-bandMaterialRouter.post("/create", authMiddleware, adminMiddleware, bandMaterialController.create);
-bandMaterialRouter.put("/update/:id", authMiddleware, adminMiddleware, bandMaterialController.update);
-bandMaterialRouter.delete("/delete/:id", authMiddleware, adminMiddleware, bandMaterialController.delete);
+bandMaterialRouter.post(
+  "/create",
+  authMiddleware,
+  adminMiddleware,
+  bandMaterialController.create,
+);
+bandMaterialRouter.put(
+  "/update/:id",
+  authMiddleware,
+  adminMiddleware,
+  bandMaterialController.update,
+);
+bandMaterialRouter.delete(
+  "/delete/:id",
+  authMiddleware,
+  adminMiddleware,
+  bandMaterialController.delete,
+);
 
 export default bandMaterialRouter;

@@ -52,5 +52,4 @@ export class BrandController {
       res.status(400).json({ message: error.message });
     }
   }
-
 }

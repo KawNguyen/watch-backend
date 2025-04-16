@@ -8,9 +8,8 @@ const stockEntryController = new StockEntryController();
 stockEntryRouter.use(authMiddleware);
 
 stockEntryRouter.get("/", (req, res) => stockEntryController.getAll(req, res));
-stockEntryRouter.get(
-  "/:id",
-  (req, res) => stockEntryController.getOne(req, res),
+stockEntryRouter.get("/:id", (req, res) =>
+  stockEntryController.getOne(req, res),
 );
 stockEntryRouter.post("/create", (req, res) =>
   stockEntryController.create(req, res),

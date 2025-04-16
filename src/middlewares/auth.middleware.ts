@@ -6,7 +6,7 @@ export const authMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction,
-):void => {
+): void => {
   try {
     const cookieToken = req.cookies?.accessToken;
     const headerToken = req.headers.authorization?.split(" ")[1];
@@ -17,13 +17,16 @@ export const authMiddleware = (
       return;
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as JwtPayload;
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string,
+    ) as JwtPayload;
     (req as any).user = decoded;
 
     next();
   } catch (error) {
     console.error("Auth Error:", error);
     res.status(401).json({ message: "Invalid token" });
-    return
+    return;
   }
 };
