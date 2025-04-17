@@ -7,9 +7,9 @@ const watchRouter = Router();
 const watchController = new WatchController();
 
 // Public routes
+watchRouter.get("/search", watchController.search);
 watchRouter.get("/", watchController.findAll);
 watchRouter.get("/:id", watchController.findOne);
-watchRouter.get("/search", watchController.search);
 watchRouter.post(
   "/create",
   authMiddleware,

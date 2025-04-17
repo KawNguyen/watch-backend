@@ -4,28 +4,6 @@ import { WatchService } from "../services/watch.service";
 const watchService = new WatchService();
 
 export class WatchController {
-  async search(req: Request, res: Response) {
-    try {
-      const { name, minPrice, maxPrice, brandId, gender, page, pageSize } =
-        req.query;
-
-      const result = await watchService.search({
-        name: name as string,
-        minPrice: minPrice ? parseFloat(minPrice as string) : undefined,
-        maxPrice: maxPrice ? parseFloat(maxPrice as string) : undefined,
-        brandId: brandId as string,
-        gender: gender as string,
-        page: page ? parseInt(page as string) : undefined,
-        pageSize: pageSize ? parseInt(pageSize as string) : undefined,
-      });
-
-      res.json(result);
-    } catch (error: any) {
-      res
-        .status(500)
-        .json({ message: "Error searching watches", error: error.message });
-    }
-  }
 
   findAll = async (req: Request, res: Response) => {
     try {
@@ -75,6 +53,37 @@ export class WatchController {
       res.status(204).send();
     } catch (error: any) {
       res.status(400).json({ message: error.message });
+    }
+  }
+
+  async search(req: Request, res: Response) {
+    try {
+      const {
+        name,
+        page,
+        pageSize
+      } = req.query;
+
+      const filters = {
+        name: name as string,
+        page: page ? Number(page) : undefined,
+        pageSize: pageSize ? Number(pageSize) : undefined
+      };
+
+      const result = await watchService.search(filters);
+
+      if (!result.data.items.length) {
+          res.status(404).json({ 
+          message: "No watches found matching your search criteria" 
+        });
+      }
+
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ 
+        message: "Error searching watches", 
+        error: error.message 
+      });
     }
   }
 }

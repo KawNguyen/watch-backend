@@ -1,4 +1,4 @@
-import { PrismaClient, WatchGender } from "@prisma/client";
+import { PrismaClient, Watch, WatchGender } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE_SIZE = 20;
@@ -43,7 +43,7 @@ export class WatchService {
     ]);
 
     return {
-      items: watches, // Changed from 'data' to 'items'
+      items: watches, 
       meta: {
         total,
         page,
@@ -102,74 +102,78 @@ export class WatchService {
     });
   }
 
-  async search(query: {
-    name?: string;
-    minPrice?: number;
-    maxPrice?: number;
-    brandId?: string;
-    gender?: string;
-    page?: number;
-    pageSize?: number;
-  }) {
-    const {
-      name,
-      minPrice,
-      maxPrice,
-      brandId,
-      gender,
-      page = 1,
-      pageSize = DEFAULT_PAGE_SIZE,
-    } = query;
-
-    const skip = (page - 1) * pageSize;
-
-    const where: any = {};
-
-    if (name) {
-      where.name = {
-        contains: name,
-        mode: "insensitive",
+  async search(filters: {
+      name?: string;
+      page?: number;
+      pageSize?: number;
+    }) {
+      const {
+        name,
+        page = 1,
+        pageSize = DEFAULT_PAGE_SIZE,
+      } = filters;
+  
+      const skip = (page - 1) * pageSize;
+      const where: any = {};
+  
+      if (name) {
+        where.OR = [
+          {
+            name: {
+              contains: name,
+              mode: 'insensitive',
+            }
+          },
+          {
+            brand: {
+              name: {
+                contains: name,
+                mode: 'insensitive',
+              }
+            }
+          }
+        ];
+      }
+  
+      const [watches, total] = await Promise.all([
+        prisma.watch.findMany({
+          where,
+          skip,
+          take: pageSize,
+          select: {
+            id: true,
+            code: true,
+            name: true,
+            brand: true,
+            bandMaterial: true,
+            material: true,
+            movement: true,
+            description: true,
+            gender: true,
+            diameter: true,
+            warranty: true,
+            waterResistance: true,
+            stock: true,
+            price: true,
+            images: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+        prisma.watch.count({ where })
+      ]);
+  
+      return {
+        data:{
+          items: watches,
+        },
+        meta: {
+          total,
+          page,
+          lastPage: Math.ceil(total / pageSize),
+          itemsPerPage: pageSize,
+        }
       };
     }
-
-    if (minPrice !== undefined || maxPrice !== undefined) {
-      where.price = {};
-      if (minPrice !== undefined) where.price.gte = minPrice;
-      if (maxPrice !== undefined) where.price.lte = maxPrice;
-    }
-
-    if (brandId) {
-      where.brandId = brandId;
-    }
-
-    if (gender) {
-      where.gender = gender;
-    }
-
-    const [watches, total] = await Promise.all([
-      prisma.watch.findMany({
-        where,
-        skip,
-        take: pageSize,
-        include: {
-          brand: true,
-          images: true,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      }),
-      prisma.watch.count({ where }),
-    ]);
-
-    return {
-      items: watches, // Changed from 'data' to 'items'
-      meta: {
-        total,
-        page,
-        lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize,
-      },
-    };
-  }
 }
