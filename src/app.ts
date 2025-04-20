@@ -20,12 +20,10 @@ const apiType = "/v1/api";
 
 const app = express();
 
-// CORS and middleware
 app.use(cookieParser());
 app.use(cors(corsOptions as any));
 app.use(express.json());
 
-// API routes
 app.use(`${apiType}/watches`, watchRouter);
 app.use(`${apiType}/brands`, brandRouter);
 app.use(`${apiType}/auth`, authRouter);
