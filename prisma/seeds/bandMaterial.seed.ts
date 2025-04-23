@@ -6,18 +6,12 @@ const bandMaterials = [
   { name: "Stainless Steel" },
   { name: "Leather" },
   { name: "Rubber" },
-  { name: "Silicone" },
   { name: "NATO Strap" },
-  { name: "Canvas" },
+  { name: "OysterSteel" },
   { name: "Titanium" },
   { name: "Gold" },
-  { name: "Platinum" },
-  { name: "Ceramic" },
-  { name: "Nylon" },
-  { name: "Mesh" },
+  { name: "Chain" },
   { name: "Alligator Leather" },
-  { name: "Crocodile Leather" },
-  { name: "Calfskin Leather" },
 ];
 
 async function seedBandMaterials() {

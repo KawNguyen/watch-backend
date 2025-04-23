@@ -15,24 +15,38 @@ enum UserRole {
   CUSTOMER
 }
 
+enum UserGender {
+  MALE
+  FEMALE
+}
+
 enum WatchGender {
   MEN
   WOMEN
   UNISEX
 }
 
+// Add this enum before the User model
+enum PaymentMethod {
+  COD
+  MOMO
+}
+
 model User {
-  id           String        @id @default(uuid())
-  name         String
-  email        String        @unique
-  password     String
-  avatar       String?       // Optional avatar URL
-  phone        String?
-  role         UserRole      @default(CUSTOMER)
+  id            String        @id @default(uuid())
+  name          String
+  email         String        @unique
+  password      String
+  avatar        String?       
+  phone         String?
+  gender        UserGender?
+  paymentMethod PaymentMethod @default(COD)  // Add this field
+  role          UserRole      @default(CUSTOMER)
   cart         Cart?
   orders       Order[]
   addresses    Address[]
   stockEntries StockEntry[]
+  favorites    Favorite[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
@@ -42,10 +56,11 @@ model Address {
   id        String   @id @default(uuid())
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  street    String   // Đường phố
-  ward      String   // Phường/Xã
-  city      String   // Thành phố
-  country   String   // Quốc gia
+  street    String?   // Đường phố
+  district  String?
+  ward      String?   // Phường/Xã
+  city      String?   // Thành phố
+  country   String?   // Quốc gia
   orders    Order[]  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -121,12 +136,40 @@ model Watch {
   diameter        Float?       // in millimeters
   waterResistance Int?        // in meters
   warranty        Int          @default(24)     // in months
+  videoUrl        String? 
   images          Image[]
   stockItems      StockItem[]
   cartItems       CartItem[]
   orderItems      OrderItem[]
+  quantities      Quantity[]
+  favorites       Favorite[]
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
+}
+
+model Quantity {
+  id        String   @id @default(uuid())
+  watch     Watch    @relation(fields: [watchId], references: [id])
+  watchId   String
+  quantity  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([watchId])
+}
+
+model Favorite {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  watch     Watch    @relation(fields: [watchId], references: [id])
+  watchId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, watchId])
+  @@index([userId])
+  @@index([watchId])
 }
 
 // Image Table (Watch Images)
@@ -162,16 +205,18 @@ model CartItem {
 }
 
 // Stock Entry Table (Lưu thông tin nhập hàng)
+// Stock Entry Table
 model StockEntry {
-  id        String      @id @default(uuid())
-  addedBy   User        @relation(fields: [addedById], references: [id])
-  addedById String
-  items     StockItem[]
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  id          String      @id @default(uuid())
+  addedBy     User        @relation(fields: [addedById], references: [id])
+  addedById   String
+  items       StockItem[]
+  totalPrice  Float       // Add total price for entire stock entry
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
 
-// Stock Item Table (Chi tiết từng mặt hàng nhập)
+// Stock Item Table
 model StockItem {
   id           String     @id @default(uuid())
   stockEntry   StockEntry @relation(fields: [stockEntryId], references: [id])
@@ -179,6 +224,7 @@ model StockItem {
   watch        Watch      @relation(fields: [watchId], references: [id])
   watchId      String
   quantity     Int        @default(1)
+  price        Float      // Add price per unit
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 }

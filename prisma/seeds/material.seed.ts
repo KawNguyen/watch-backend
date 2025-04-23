@@ -5,16 +5,15 @@ const prisma = new PrismaClient();
 const materials = [
   { name: "Stainless Steel" },
   { name: "Titanium" },
-  { name: "Yellow Gold" },
-  { name: "Rose Gold" },
+  { name: "Gold" },
+  { name: "Pink Gold" },
   { name: "White Gold" },
   { name: "Platinum" },
   { name: "Ceramic" },
   { name: "Carbon Fiber" },
-  { name: "Bronze" },
-  { name: "Tungsten" },
-  { name: "PVD Coated Steel" },
-  { name: "DLC Coated Steel" },
+  { name: "Oystersteel" },
+  { name: "Carbon Fiber" },
+  { name: "Sapphire" },
 ];
 
 async function seedMaterials() {

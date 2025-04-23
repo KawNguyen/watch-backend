@@ -38,11 +38,6 @@ export class AuthController {
         accessToken: token,
         user: {
           id: loginResult.user.id,
-          email: loginResult.user.email,
-          name: loginResult.user.name,
-          role: loginResult.user.role,
-          avatar: loginResult.user.avatar,
-          phone: loginResult.user.phone,
         },
       });
     } catch (error: any) {

@@ -6,6 +6,7 @@ import { adminMiddleware } from "../middlewares/admin.middleware";
 const bandMaterialRouter = Router();
 const bandMaterialController = new BandMaterialController();
 
+bandMaterialRouter.get("/search", bandMaterialController.search);
 bandMaterialRouter.get("/", bandMaterialController.findAll);
 bandMaterialRouter.get("/:id", bandMaterialController.findOne);
 bandMaterialRouter.post(

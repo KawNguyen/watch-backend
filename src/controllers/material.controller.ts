@@ -52,4 +52,19 @@ export class MaterialController {
       res.status(500).json({ message: "Error deleting material", error });
     }
   };
+
+  search = async (req: Request, res: Response) => {
+    try {
+      const { name, page, pageSize } = req.query;
+      const filters = {
+        name: name as string,
+        page: page ? Number(page) : undefined,
+        pageSize: pageSize ? Number(pageSize) : undefined,
+      };
+      const result = await materialService.search(filters.name);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Error searching materials", error });
+    }
+  };
 }

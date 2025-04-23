@@ -6,6 +6,7 @@ import { adminMiddleware } from "../middlewares/admin.middleware";
 const movementRouter = Router();
 const movementController = new MovementController();
 
+movementRouter.get("/search", movementController.search);
 movementRouter.get("/", movementController.findAll);
 movementRouter.get("/:id", movementController.findOne);
 movementRouter.post(

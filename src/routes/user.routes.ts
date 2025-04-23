@@ -6,19 +6,33 @@ import { adminMiddleware } from "../middlewares/admin.middleware";
 const userRouter = Router();
 const userController = new UserController();
 
-// Protected routes (admin only)
+userRouter.get(
+  "/search",
+  authMiddleware,
+  adminMiddleware,
+  userController.searchUsers,
+)
 
-userRouter.get("/", authMiddleware, adminMiddleware, (req, res) =>
-  userController.getAllUsers(req, res),
+userRouter.get(
+  "/customers",
+  authMiddleware,
+  adminMiddleware,
+  userController.getAllCustomers
+)
+
+userRouter.get(
+  "/",
+  authMiddleware,
+  adminMiddleware,
+  userController.getAllUsers
 );
-userRouter.get("/:id", authMiddleware, adminMiddleware, (req, res) =>
-  userController.getUserById(req, res),
+userRouter.get(
+  "/:id",
+  authMiddleware,
+  adminMiddleware,
+  userController.getUserById
 );
-userRouter.put("/:id", authMiddleware, (req, res) =>
-  userController.updateUser(req, res),
-);
-userRouter.delete("/:id", authMiddleware, (req, res) =>
-  userController.deleteUser(req, res),
-);
+userRouter.put("/update/:id", authMiddleware, userController.updateUser);
+userRouter.delete("/delete/:id", authMiddleware, userController.deleteUser);
 
 export default userRouter;

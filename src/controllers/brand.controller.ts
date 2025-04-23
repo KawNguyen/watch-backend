@@ -52,4 +52,32 @@ export class BrandController {
       res.status(400).json({ message: error.message });
     }
   }
+
+  async search(req: Request, res: Response) {
+    try {
+      const {
+        name,
+        page,
+        pageSize
+      } = req.query;
+
+      const filters = {
+        name: name as string,
+        page: page ? Number(page) : undefined,
+        pageSize: pageSize ? Number(pageSize) : undefined
+      };
+
+      const result = await brandService.search(filters);
+
+      if (!result.data.items.length) {
+        res.status(404).json({ 
+          message: "No brands found matching your search criteria" 
+        });
+      }
+
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
 }

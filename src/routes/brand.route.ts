@@ -6,6 +6,7 @@ import { adminMiddleware } from "../middlewares/admin.middleware";
 const brandRouter = Router();
 const brandController = new BrandController();
 
+brandRouter.get("/search", brandController.search);
 brandRouter.get("/", brandController.findAll);
 brandRouter.get("/:id", brandController.findOne);
 brandRouter.post(

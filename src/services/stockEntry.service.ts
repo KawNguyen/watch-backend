@@ -5,17 +5,22 @@ const prisma = new PrismaClient();
 export class StockEntryService {
   async create(
     addedById: string,
-    items: { watchId: string; quantity: number }[],
+    items: { watchId: string; quantity: number; price: number }[],
   ) {
     return await prisma.$transaction(async (tx) => {
+      // Calculate total price for the stock entry
+      const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
       // Create stock entry with items in a single transaction
       const stockEntry = await tx.stockEntry.create({
         data: {
           addedById,
+          totalPrice,
           items: {
             create: items.map((item) => ({
               watchId: item.watchId,
               quantity: item.quantity,
+              price: item.price,
             })),
           },
         },

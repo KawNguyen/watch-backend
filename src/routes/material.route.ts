@@ -6,6 +6,7 @@ import { adminMiddleware } from "../middlewares/admin.middleware";
 const materialRouter = Router();
 const materialController = new MaterialController();
 
+materialRouter.get("/search", materialController.search);
 materialRouter.get("/", materialController.findAll);
 materialRouter.get("/:id", materialController.findOne);
 materialRouter.post(

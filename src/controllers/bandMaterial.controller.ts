@@ -55,4 +55,34 @@ export class BandMaterialController {
       res.status(500).json({ message: "Error deleting band material", error });
     }
   };
+
+  search = async (req: Request, res: Response) => {
+    try {
+      const {
+        name,
+        page,
+        pageSize
+      } = req.query;
+
+      const filters = {
+        name: name as string,
+        page: page ? Number(page) : undefined,
+        pageSize: pageSize ? Number(pageSize) : undefined
+      };
+
+      const result = await bandMaterialService.search(filters.name);
+
+      if (!result.data.items.length) {
+        res.status(404).json({ 
+          message: "No brands found matching your search criteria" 
+        });
+        return
+      }
+
+      res.json(result);
+      return;
+    } catch (error) {
+      res.status(500).json({ message: "Error searching band materials", error });
+    }
+  }
 }

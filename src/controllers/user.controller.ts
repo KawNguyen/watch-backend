@@ -13,6 +13,15 @@ export class UserController {
     }
   }
 
+  async getAllCustomers(req: Request, res: Response) {
+    try {
+      const customers = await userService.getAllCustomers();
+      res.json(customers);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
   async getUserById(req: Request, res: Response) {
     try {
       const { id } = req.params;
@@ -41,6 +50,34 @@ export class UserController {
       res.json({ message: "User deleted successfully" });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
+    }
+  }
+
+  async searchUsers(req: Request, res: Response) {
+    try {
+      const {
+        query,
+        page,
+        pageSize
+      } = req.query;
+
+      const filters = {
+        query: query as string,
+        page: page ? Number(page) : undefined,
+        pageSize: pageSize ? Number(pageSize) : undefined
+      };
+
+      const result = await userService.searchUsers(filters);
+
+      if (!result.data.items.length) {
+          res.status(404).json({ 
+          message: "No watches found matching your search criteria" 
+        });
+      }
+
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
     }
   }
 }

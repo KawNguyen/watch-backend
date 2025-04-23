@@ -4,17 +4,8 @@ const prisma = new PrismaClient();
 
 const movements = [
   { name: "Automatic" },
-  { name: "Manual Winding" },
   { name: "Quartz" },
-  { name: "Solar" },
-  { name: "Kinetic" },
-  { name: "Spring Drive" },
   { name: "Mechanical" },
-  { name: "Chronograph" },
-  { name: "Eco-Drive" },
-  { name: "Co-Axial" },
-  { name: "Tourbillon" },
-  { name: "Perpetual Calendar" },
 ];
 
 async function seedMovements() {
