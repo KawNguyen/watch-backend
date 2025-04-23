@@ -86,4 +86,20 @@ export class WatchController {
       });
     }
   }
+
+  async getWatchesByBrand(req: Request, res: Response) {
+      try {
+        const brandId = req.params.brandId;
+        const page = Number(req.query.page) || 1;
+        const pageSize = Number(req.query.pageSize) || 20;
+  
+        const result = await watchService.getWatchesByBrand(brandId, page, pageSize);
+        res.status(result.status).json(result);
+      } catch (error: any) {
+        res.status(400).json({
+          status: 400,
+          message: error.message,
+        });
+      }
+    }
 }

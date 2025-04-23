@@ -132,7 +132,6 @@ model Watch {
   bandMaterial    BandMaterial? @relation(fields: [bandMaterialId], references: [id])
   movementId      String?
   movement        Movement?    @relation(fields: [movementId], references: [id])
-  stock           Int          @default(0)
   diameter        Float?       // in millimeters
   waterResistance Int?        // in meters
   warranty        Int          @default(24)     // in months
@@ -141,7 +140,7 @@ model Watch {
   stockItems      StockItem[]
   cartItems       CartItem[]
   orderItems      OrderItem[]
-  quantities      Quantity[]
+  quantities      Quantity[]   // This will handle the stock management
   favorites       Favorite[]
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt

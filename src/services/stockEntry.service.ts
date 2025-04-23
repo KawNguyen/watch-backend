@@ -39,10 +39,10 @@ export class StockEntryService {
 
       // Update watch stock quantities
       for (const item of items) {
-        await tx.watch.update({
+        await tx.quantity.update({
           where: { id: item.watchId },
           data: {
-            stock: {
+            quantity: {
               increment: item.quantity,
             },
           },

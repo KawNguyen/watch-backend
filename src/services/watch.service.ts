@@ -82,8 +82,8 @@ export class WatchService {
         diameter: true,
         warranty: true,
         waterResistance: true,
-        stock: true,
         price: true,
+        videoUrl: true,
         images: true,
       },
     });
@@ -195,8 +195,8 @@ export class WatchService {
           diameter: true,
           warranty: true,
           waterResistance: true,
-          stock: true,
           price: true,
+          videoUrl: true,
           images: true,
         },
         orderBy: {
@@ -209,6 +209,50 @@ export class WatchService {
     return {
       status: 200,
       message: "Watches searched successfully",
+      data: {
+        items: watches,
+      },
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / pageSize),
+        itemsPerPage: pageSize,
+      },
+    };
+  }
+
+  async getWatchesByBrand(brandId: string, page = 1, pageSize = DEFAULT_PAGE_SIZE) {
+    const skip = (page - 1) * pageSize;
+
+    const [watches, total] = await Promise.all([
+      prisma.watch.findMany({
+        where: {
+          brandId: brandId,
+        },
+        skip,
+        take: pageSize,
+        include: {
+          brand: true,
+          material: true,
+          bandMaterial: true,
+          movement: true,
+          images: true,
+          quantities: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      prisma.watch.count({
+        where: {
+          brandId: brandId,
+        },
+      }),
+    ]);
+
+    return {
+      status: 200,
+      message: "Watches by brand fetched successfully",
       data: {
         items: watches,
       },

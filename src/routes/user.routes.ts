@@ -29,7 +29,6 @@ userRouter.get(
 userRouter.get(
   "/:id",
   authMiddleware,
-  adminMiddleware,
   userController.getUserById
 );
 userRouter.put("/update/:id", authMiddleware, userController.updateUser);

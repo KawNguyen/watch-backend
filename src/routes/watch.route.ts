@@ -10,6 +10,7 @@ const watchController = new WatchController();
 watchRouter.get("/search", watchController.search);
 watchRouter.get("/", watchController.findAll);
 watchRouter.get("/:id", watchController.findOne);
+watchRouter.get("/brand/:brandId", watchController.getWatchesByBrand);
 watchRouter.post(
   "/create",
   authMiddleware,
