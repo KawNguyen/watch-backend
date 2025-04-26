@@ -16,6 +16,7 @@ import movementRouter from "./routes/movement.route";
 import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.routes";
 import favoriteRouter from "./routes/favorite.routes";
+import quantityRouter from "./routes/quantity.route";
 
 dotenv.config();
 const apiType = "/v1/api";
@@ -38,6 +39,7 @@ app.use(`${apiType}/band-materials`, bandMaterialRouter);
 app.use(`${apiType}/movements`, movementRouter);
 app.use(`${apiType}/users`, userRouter);
 app.use(`${apiType}/favorites`, favoriteRouter);
+app.use(`${apiType}/quantities`, quantityRouter);
 app.use(errorMiddleware);
 
 export default app;

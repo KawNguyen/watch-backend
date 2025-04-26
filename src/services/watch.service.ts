@@ -1,7 +1,7 @@
 import { PrismaClient, WatchGender } from "@prisma/client";
 
 const prisma = new PrismaClient();
-const DEFAULT_PAGE_SIZE = 20;
+const DEFAULT_PAGE_SIZE = 10;
 
 export class WatchService {
   async create(data: any) {
@@ -30,13 +30,13 @@ export class WatchService {
     };
   }
 
-  async findAll(page = 1, pageSize = DEFAULT_PAGE_SIZE) {
-    const skip = (page - 1) * pageSize;
+  async findAll(page = 1, limit = DEFAULT_PAGE_SIZE) {
+    const skip = (page - 1) * limit;
 
     const [watches, total] = await Promise.all([
       prisma.watch.findMany({
         skip,
-        take: pageSize,
+        take: limit,
         include: {
           brand: true,
           material: true,
@@ -51,6 +51,8 @@ export class WatchService {
       prisma.watch.count(),
     ]);
 
+    const totalPages = Math.ceil(total / limit);
+
     return {
       status: 200,
       message: "Watches fetched successfully",
@@ -60,8 +62,9 @@ export class WatchService {
       meta: {
         total,
         page,
-        lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize,
+        totalPages,
+        lastPage: totalPages,
+        itemsPerPage: limit,
       },
     };
   }
@@ -147,15 +150,15 @@ export class WatchService {
   async search(filters: {
     name?: string;
     page?: number;
-    pageSize?: number;
+    limit?: number;
   }) {
     const {
       name,
       page = 1,
-      pageSize = DEFAULT_PAGE_SIZE,
+      limit = DEFAULT_PAGE_SIZE,
     } = filters;
 
-    const skip = (page - 1) * pageSize;
+    const skip = (page - 1) * limit;
     const where: any = {};
 
     if (name) {
@@ -181,7 +184,7 @@ export class WatchService {
       prisma.watch.findMany({
         where,
         skip,
-        take: pageSize,
+        take: limit,
         select: {
           id: true,
           code: true,
@@ -206,6 +209,8 @@ export class WatchService {
       prisma.watch.count({ where }),
     ]);
 
+    const totalPages = Math.ceil(total / limit);
+    
     return {
       status: 200,
       message: "Watches searched successfully",
@@ -215,14 +220,15 @@ export class WatchService {
       meta: {
         total,
         page,
-        lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize,
+        totalPages,
+        lastPage: Math.ceil(total / limit),
+        itemsPerPage: limit,
       },
     };
   }
 
-  async getWatchesByBrand(brandId: string, page = 1, pageSize = DEFAULT_PAGE_SIZE) {
-    const skip = (page - 1) * pageSize;
+  async getWatchesByBrand(brandId: string, page = 1, limit = DEFAULT_PAGE_SIZE) {
+    const skip = (page - 1) * limit;
 
     const [watches, total] = await Promise.all([
       prisma.watch.findMany({
@@ -230,7 +236,7 @@ export class WatchService {
           brandId: brandId,
         },
         skip,
-        take: pageSize,
+        take: limit,
         include: {
           brand: true,
           material: true,
@@ -250,6 +256,8 @@ export class WatchService {
       }),
     ]);
 
+    const totalPages = Math.ceil(total / limit);
+
     return {
       status: 200,
       message: "Watches by brand fetched successfully",
@@ -259,8 +267,9 @@ export class WatchService {
       meta: {
         total,
         page,
-        lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize,
+        totalPages,
+        lastPage: Math.ceil(total / limit),
+        itemsPerPage: limit,
       },
     };
   }

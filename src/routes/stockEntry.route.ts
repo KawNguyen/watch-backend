@@ -1,18 +1,15 @@
+import { authMiddleware } from './../middlewares/auth.middleware';
 import { Router } from "express";
 import { StockEntryController } from "../controllers/stockEntry.controller";
-import { authMiddleware } from "../middlewares/auth.middleware";
+import { adminMiddleware } from "../middlewares/admin.middleware";
 
 const stockEntryRouter = Router();
 const stockEntryController = new StockEntryController();
 
 stockEntryRouter.use(authMiddleware);
 
-stockEntryRouter.get("/", (req, res) => stockEntryController.getAll(req, res));
-stockEntryRouter.get("/:id", (req, res) =>
-  stockEntryController.getOne(req, res),
-);
-stockEntryRouter.post("/create", (req, res) =>
-  stockEntryController.create(req, res),
-);
+stockEntryRouter.get("/", adminMiddleware, stockEntryController.findAll);
+stockEntryRouter.get("/:id", authMiddleware, adminMiddleware, stockEntryController.findOne);
+stockEntryRouter.post("/create", authMiddleware, adminMiddleware, stockEntryController.create);
 
 export default stockEntryRouter;

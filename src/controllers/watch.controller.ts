@@ -71,13 +71,6 @@ export class WatchController {
       };
 
       const result = await watchService.search(filters);
-
-      if (!result.data.items.length) {
-          res.status(404).json({ 
-          message: "No watches found matching your search criteria" 
-        });
-      }
-
       res.json(result);
     } catch (error: any) {
       res.status(500).json({ 

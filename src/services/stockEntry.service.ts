@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+const DEFAULT_PAGE_SIZE = 10;
 
 export class StockEntryService {
   async create(
@@ -11,7 +12,6 @@ export class StockEntryService {
       // Calculate total price for the stock entry
       const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-      // Create stock entry with items in a single transaction
       const stockEntry = await tx.stockEntry.create({
         data: {
           addedById,
@@ -22,7 +22,7 @@ export class StockEntryService {
               quantity: item.quantity,
               price: item.price,
             })),
-          },
+          },  
         },
         include: {
           items: {
@@ -37,14 +37,13 @@ export class StockEntryService {
         },
       });
 
-      // Update watch stock quantities
       for (const item of items) {
-        await tx.quantity.update({
+        await tx.quantity.upsert({
           where: { id: item.watchId },
-          data: {
-            quantity: {
-              increment: item.quantity,
-            },
+          update: { quantity: { increment: item.quantity } },
+          create: {
+            watchId: item.watchId,
+            quantity: item.quantity,
           },
         });
       }
@@ -53,25 +52,57 @@ export class StockEntryService {
     });
   }
 
-  async findAll() {
-    return await prisma.stockEntry.findMany({
-      include: {
-        items: {
-          include: { watch: true },
-        },
-        addedBy: {
-          select: {
-            name: true,
-            email: true,
+  async findAll(page = 1, limit = DEFAULT_PAGE_SIZE) {
+    const skip = (page - 1) * limit;
+
+    const [stockEntries, total] = await Promise.all([
+      prisma.stockEntry.findMany({
+        skip,
+        take: limit,
+        include: {
+          items: {
+            include: { watch: 
+              {
+                select: {
+                  name: true,
+                  images: true,
+                  price: true,
+                },
+              }
+             },
+          },
+          addedBy: {
+            select: {
+              name: true,
+              email: true,
+            },
           },
         },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.stockEntry.count(),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      status: 200,
+      message: "Stock entries fetched successfully",
+      data: {
+        items: stockEntries,
       },
-      orderBy: { createdAt: "desc" },
-    });
+      meta: {
+        total,
+        page,
+        totalPages,
+        lastPage: totalPages,
+        itemsPerPage: limit,
+      },
+    };
   }
 
   async findOne(id: string) {
-    return await prisma.stockEntry.findUnique({
+    const stockEntry = await prisma.stockEntry.findUnique({
       where: { id },
       include: {
         items: {
@@ -85,24 +116,65 @@ export class StockEntryService {
         },
       },
     });
+
+    if (!stockEntry) {
+      return {
+        status: 404,
+        message: "Stock entry not found"
+      };
+    }
+
+    return {
+      status: 200,
+      message: "Stock entry fetched successfully",
+      data: {
+        item: stockEntry
+      }
+    };
   }
 
-  async getStockHistory(watchId: string) {
-    return await prisma.stockItem.findMany({
-      where: { watchId },
-      include: {
-        stockEntry: {
-          include: {
-            addedBy: {
-              select: {
-                name: true,
-                email: true,
+  async getStockHistory(watchId: string, page = 1, limit = DEFAULT_PAGE_SIZE) {
+    const skip = (page - 1) * limit;
+
+    const [stockItems, total] = await Promise.all([
+      prisma.stockItem.findMany({
+        where: { watchId },
+        skip,
+        take: limit,
+        include: {
+          stockEntry: {
+            include: {
+              addedBy: {
+                select: {
+                  name: true,
+                  email: true,
+                },
               },
             },
           },
         },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.stockItem.count({
+        where: { watchId }
+      })
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      status: 200,
+      message: "Stock history fetched successfully",
+      data: {
+        items: stockItems,
       },
-      orderBy: { createdAt: "desc" },
-    });
+      meta: {
+        total,
+        page,
+        totalPages,
+        lastPage: totalPages,
+        itemsPerPage: limit,
+      },
+    };
   }
 }
