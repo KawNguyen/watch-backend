@@ -4,10 +4,18 @@ import { CartService } from "../services/cart.service";
 const cartService = new CartService();
 
 export class CartController {
-  async getCart(req: Request, res: Response) {
+  async getUserCart(req: Request, res: Response) {
     try {
-      const userId = req?.user.id;
-      const result = await cartService.getOrCreateCart(userId);
+      const { userId } = req.params;
+
+      if (!userId) {
+        res.status(400).json({
+          status: 400,
+          message: "User ID is required",
+        });
+      }
+
+      const result = await cartService.getUserCart(userId);
       res.status(result.status).json(result);
     } catch (error: any) {
       res.status(500).json({
@@ -20,8 +28,8 @@ export class CartController {
 
   async addToCart(req: Request, res: Response) {
     try {
-      const userId = req?.user.id;
-      const { watchId, quantity } = req.body;
+      // const userId = req?.body;
+      const { userId, watchId, quantity } = req.body;
 
       if (!watchId) {
         res.status(400).json({
@@ -43,9 +51,7 @@ export class CartController {
 
   async updateQuantity(req: Request, res: Response) {
     try {
-      const userId = req?.user.id;
-      const { itemId } = req.params;
-      const { quantity } = req.body;
+      const { userId, cartItemId, quantity } = req.body;
 
       if (!quantity || quantity < 1) {
         res.status(400).json({
@@ -54,7 +60,7 @@ export class CartController {
         });
       }
 
-      const result = await cartService.updateQuantity(userId, itemId, quantity);
+      const result = await cartService.updateQuantity(userId, cartItemId, quantity);
       res.status(result.status).json(result);
     } catch (error: any) {
       res.status(500).json({
@@ -67,10 +73,10 @@ export class CartController {
 
   async removeFromCart(req: Request, res: Response) {
     try {
-      const userId = req?.user.id;
-      const { itemId } = req.params;
+      // const userId = req?.body;
+      const { userId, cartItemId } = req.params;
 
-      const result = await cartService.removeItem(userId, itemId);
+      const result = await cartService.removeItem(userId, cartItemId);
       res.status(result.status).json(result);
     } catch (error: any) {
       res.status(500).json({
@@ -83,7 +89,7 @@ export class CartController {
 
   async clearCart(req: Request, res: Response) {
     try {
-      const userId = req?.user.id;
+      const userId = req?.body;
       const result = await cartService.clearCart(userId);
       res.status(result.status).json(result);
     } catch (error: any) {

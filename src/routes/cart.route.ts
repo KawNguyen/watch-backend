@@ -7,9 +7,10 @@ const cartController = new CartController();
 
 cartRouter.use(authMiddleware as any);
 
-cartRouter.get("/", cartController.getCart);
 cartRouter.post("/add", cartController.addToCart);
-cartRouter.delete("/remove/:itemId", cartController.removeFromCart);
+cartRouter.get("/:userId", cartController.getUserCart);
+cartRouter.put("/:userId/update-quantity/:cartItemId", cartController.updateQuantity);
+cartRouter.delete("/:userId/remove/:cartItemId", cartController.removeFromCart);
 cartRouter.delete("/clear", cartController.clearCart);
 
 export default cartRouter;

@@ -6,8 +6,8 @@ const favoriteService = new FavoriteService();
 export class FavoriteController {
   async addToFavorites(req: Request, res: Response) {
     try {
-      const userId = req.params?.id;
-      const { watchId } = req.body;
+      // const userId = req.params?.id;
+      const { userId, watchId } = req.body;
 
       if (!userId || !watchId) {
         throw new Error("User ID and Watch ID are required");
@@ -25,8 +25,7 @@ export class FavoriteController {
 
   async removeFromFavorites(req: Request, res: Response) {
     try {
-      const userId = req.params?.id;
-      const { watchId } = req.params;
+      const {userId, watchId } = req.body;
 
       if (!userId || !watchId) {
         throw new Error("User ID and Watch ID are required");
@@ -44,7 +43,7 @@ export class FavoriteController {
 
   async getUserFavorites(req: Request, res: Response) {
     try {
-      const userId = req.params?.id;
+      const userId = req.body;
       const page = Number(req.query.page) || 1;
       const pageSize = Number(req.query.pageSize) || 20;
 
@@ -69,8 +68,8 @@ export class FavoriteController {
 
   async checkFavorite(req: Request, res: Response) {
     try {
-      const userId = req.params?.id;
-      const { watchId } = req.params;
+      // const userId = req.params?.id;
+      const {userId, watchId } = req.body;
       
       if (!userId || !watchId) {
         throw new Error("User ID and Watch ID are required");

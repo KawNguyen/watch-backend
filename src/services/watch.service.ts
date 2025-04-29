@@ -147,16 +147,8 @@ export class WatchService {
     };
   }
 
-  async search(filters: {
-    name?: string;
-    page?: number;
-    limit?: number;
-  }) {
-    const {
-      name,
-      page = 1,
-      limit = DEFAULT_PAGE_SIZE,
-    } = filters;
+  async search(filters: { name?: string; page?: number; limit?: number }) {
+    const { name, page = 1, limit = DEFAULT_PAGE_SIZE } = filters;
 
     const skip = (page - 1) * limit;
     const where: any = {};
@@ -166,17 +158,17 @@ export class WatchService {
         {
           name: {
             contains: name,
-            mode: 'insensitive',
-          }
+            mode: "insensitive",
+          },
         },
         {
           brand: {
             name: {
               contains: name,
-              mode: 'insensitive',
-            }
-          }
-        }
+              mode: "insensitive",
+            },
+          },
+        },
       ];
     }
 
@@ -203,14 +195,14 @@ export class WatchService {
           images: true,
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
       }),
       prisma.watch.count({ where }),
     ]);
 
     const totalPages = Math.ceil(total / limit);
-    
+
     return {
       status: 200,
       message: "Watches searched successfully",
@@ -227,7 +219,11 @@ export class WatchService {
     };
   }
 
-  async getWatchesByBrand(brandId: string, page = 1, limit = DEFAULT_PAGE_SIZE) {
+  async getWatchesByBrand(
+    brandId: string,
+    page = 1,
+    limit = DEFAULT_PAGE_SIZE
+  ) {
     const skip = (page - 1) * limit;
 
     const [watches, total] = await Promise.all([
@@ -246,7 +242,7 @@ export class WatchService {
           quantities: true,
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
       }),
       prisma.watch.count({
@@ -273,4 +269,189 @@ export class WatchService {
       },
     };
   }
+
+  async getWatchesByMovement(
+    movementName: string,
+    page = 1,
+    limit = DEFAULT_PAGE_SIZE
+  ) {
+    const skip = (page - 1) * limit;
+
+    const [watches, total] = await Promise.all([
+      prisma.watch.findMany({
+        where: {
+          movement:{
+            name:{
+              equals: movementName,
+              mode: 'insensitive'
+            }
+          }
+        },
+        skip,
+        take: limit,
+        include: {
+          brand: true,
+          material: true,
+          bandMaterial: true,
+          movement: true,
+          images: true,
+          quantities: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      }),
+      prisma.watch.count({
+        where: {
+          movement: {
+            name: {
+              equals: movementName,
+              mode: 'insensitive'
+            }
+          }
+        },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    return {
+      status: 200,
+      message: "Watches by movement fetched successfully",
+      data: {
+        items: watches,
+      },
+      meta: {
+        total,
+        page,
+        totalPages,
+        lastPage: Math.ceil(total / limit),
+        itemsPerPage: limit,
+      },
+    };
+  }
+
+  async filterWatches(filters: {
+      brandName?: string;
+      bandMaterialName?: string;
+      materialName?: string;
+      movementName?: string;
+      gender?: WatchGender;  // Change type to WatchGender
+      diameter?: number;
+      waterResistance?: number;
+      warranty?: number;
+      minPrice?: number;
+      maxPrice?: number;
+      page?: number;
+      limit?: number;
+    }) {
+      const {
+        brandName,
+        bandMaterialName,
+        materialName,
+        movementName,
+        gender,
+        diameter,
+        waterResistance,
+        warranty,
+        minPrice,
+        maxPrice,
+        page = 1,
+        limit = DEFAULT_PAGE_SIZE
+      } = filters;
+  
+      const skip = (page - 1) * limit;
+      const where: any = {};
+  
+      if (brandName) {
+        where.brand = {
+          name: {
+            equals: brandName,
+            mode: 'insensitive'
+          }
+        };
+      }
+      if (bandMaterialName) {
+        where.bandMaterial = {
+          name: {
+            equals: bandMaterialName,
+            mode: 'insensitive'
+          }
+        };
+      }
+      if (materialName) {
+        where.material = {
+          name: {
+            equals: materialName,
+            mode: 'insensitive'
+          }
+        };
+      }
+      if (movementName) {
+        where.movement = {
+          name: {
+            equals: movementName,
+            mode: 'insensitive'
+          }
+        };
+      }
+      if (gender) {
+        where.gender = gender as WatchGender;  // Cast to WatchGender enum
+      }
+      if (diameter) {
+        where.diameter = diameter;
+      }
+      if (waterResistance) {
+        where.waterResistance = waterResistance;
+      }
+      if (warranty) {
+        where.warranty = warranty;
+      }
+      if (minPrice !== undefined || maxPrice !== undefined) {
+        where.price = {};
+        if (minPrice !== undefined) {
+          where.price.gte = minPrice;
+        }
+        if (maxPrice !== undefined) {
+          where.price.lte = maxPrice;
+        }
+      }
+  
+      const [watches, total] = await Promise.all([
+        prisma.watch.findMany({
+          where,
+          skip,
+          take: limit,
+          include: {
+            brand: true,
+            material: true,
+            bandMaterial: true,
+            movement: true,
+            images: true,
+            quantities: true,
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        }),
+        prisma.watch.count({ where })
+      ]);
+  
+      const totalPages = Math.ceil(total / limit);
+  
+      return {
+        status: 200,
+        message: "Watches filtered successfully",
+        data: {
+          items: watches,
+        },
+        meta: {
+          total,
+          page,
+          totalPages,
+          lastPage: Math.ceil(total / limit),
+          itemsPerPage: limit,
+        },
+      };
+    }
 }

@@ -15,7 +15,10 @@ export class QuantityService {
           watch: {
             include: {
               brand: true,
-              images: true
+              images: true,
+              movement:true,
+              material:true,
+              bandMaterial:true,
             }
           }
         },
@@ -164,7 +167,10 @@ export class QuantityService {
           watch: {
             include: {
               brand: true,
-              images: true
+              images: true,
+              movement:true,
+              material:true,
+              bandMaterial:true,
             }
           }
         },
