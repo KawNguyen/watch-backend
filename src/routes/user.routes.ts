@@ -10,15 +10,15 @@ userRouter.get(
   "/search",
   authMiddleware,
   adminMiddleware,
-  userController.searchUsers,
-)
+  userController.searchUsers
+);
 
 userRouter.get(
   "/customers",
   authMiddleware,
   adminMiddleware,
   userController.getAllCustomers
-)
+);
 
 userRouter.get(
   "/",
@@ -26,11 +26,7 @@ userRouter.get(
   adminMiddleware,
   userController.getAllUsers
 );
-userRouter.get(
-  "/:id",
-  authMiddleware,
-  userController.getUserById
-);
+userRouter.get("/:id", authMiddleware, userController.getUserById);
 userRouter.put("/update/:id", authMiddleware, userController.updateUser);
 userRouter.delete("/delete/:id", authMiddleware, userController.deleteUser);
 

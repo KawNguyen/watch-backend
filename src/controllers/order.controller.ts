@@ -7,8 +7,7 @@ const orderService = new OrderService();
 export class OrderController {
   async create(req: Request, res: Response) {
     try {
-      const userId = (req as any).user.userId;
-      const { addressId } = req.body;
+      const { userId, addressId } = req.body;
       const order = await orderService.create(userId, addressId);
       res.status(201).json(order);
     } catch (error: any) {
@@ -16,10 +15,12 @@ export class OrderController {
     }
   }
 
-  async getOrders(req: Request, res: Response) {
+  async getOrdersById(req: Request, res: Response) {
     try {
-      const userId = (req as any).user.userId;
-      const orders = await orderService.findAll(userId);
+      const userId = req.body;
+      const page = Number(req.query.page) || 1;
+      const pageSize = Number(req.query.pageSize) || 20;
+      const orders = await orderService.findAllById(userId, page, pageSize);
       res.json(orders);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
