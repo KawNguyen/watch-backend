@@ -6,7 +6,7 @@ const cartService = new CartService();
 export class CartController {
   async getUserCart(req: Request, res: Response) {
     try {
-      const { userId } = req.params;
+      const { userId } = req.body;
 
       if (!userId) {
         res.status(400).json({

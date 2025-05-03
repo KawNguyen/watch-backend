@@ -15,12 +15,12 @@ export class OrderController {
     }
   }
 
-  async getOrdersById(req: Request, res: Response) {
+  async getOrdersByUserId(req: Request, res: Response) {
     try {
       const userId = req.body;
       const page = Number(req.query.page) || 1;
       const pageSize = Number(req.query.pageSize) || 20;
-      const orders = await orderService.findAllById(userId, page, pageSize);
+      const orders = await orderService.findAllByUserId(userId, page, pageSize);
       res.json(orders);
     } catch (error: any) {
       res.status(500).json({ message: error.message });

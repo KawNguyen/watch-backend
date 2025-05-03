@@ -5,7 +5,6 @@ const DEFAULT_PAGE_SIZE = 20;
 
 export class FavoriteService {
   async addToFavorites(userId: string, watchId: string) {
-    // Check if favorite already exists
     const existingFavorite = await prisma.favorite.findUnique({
       where: {
         userId_watchId: {

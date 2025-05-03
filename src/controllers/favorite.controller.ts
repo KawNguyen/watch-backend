@@ -6,7 +6,6 @@ const favoriteService = new FavoriteService();
 export class FavoriteController {
   async addToFavorites(req: Request, res: Response) {
     try {
-      // const userId = req.params?.id;
       const { userId, watchId } = req.body;
 
       if (!userId || !watchId) {

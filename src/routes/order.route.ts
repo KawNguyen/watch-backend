@@ -8,7 +8,7 @@ const orderController = new OrderController();
 orderRouter.use(authMiddleware);
 
 orderRouter.post("/create", orderController.create);
-orderRouter.get("/:id", orderController.getOrdersById);
+orderRouter.get("/:userId", orderController.getOrdersByUserId);
 orderRouter.get("/:userId/:id", orderController.getOrder);
 orderRouter.put("/status/:id", orderController.updateStatus);
 

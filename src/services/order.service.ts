@@ -86,7 +86,7 @@ export class OrderService {
     }
   }
 
-  async findAllById(userId: string, page = 1, limit = DEFAULT_PAGE_SIZE) {
+  async findAllByUserId(userId: string, page = 1, limit = DEFAULT_PAGE_SIZE) {
     const skip = (page - 1) * limit;
 
     const [orders, total] = await Promise.all([
