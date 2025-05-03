@@ -8,7 +8,31 @@ export class AuthController {
   async register(req: Request, res: Response) {
     try {
       const user = await authService.register(req.body);
-      res.status(201).json(user);
+  
+      const token = jwt.sign(
+        { id: user.id },
+        process.env.JWT_SECRET as string,
+        { expiresIn: "24h" }
+      );
+  
+      res.cookie("accessToken", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 24 * 60 * 60 * 1000, // 1 ngày
+      });
+  
+      res.status(201).json({
+        message: "Registration successful",
+        accessToken: token,
+        user: {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          avatar: user.avatar,
+        },
+      });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
