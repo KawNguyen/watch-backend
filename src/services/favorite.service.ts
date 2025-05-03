@@ -64,46 +64,29 @@ export class FavoriteService {
     };
   }
 
-  async getUserFavorites(userId: string, page = 1, pageSize = DEFAULT_PAGE_SIZE) {
-    const skip = (page - 1) * pageSize;
-
-    const [favorites, total] = await Promise.all([
-      prisma.favorite.findMany({
-        where: {
-          userId,
-        },
-        skip,
-        take: pageSize,
-        include: {
-          watch: {
-            include: {
-              brand: true,
-              images: true,
-            },
+  async getUserFavorites(userId: string) {
+    const favorites = await prisma.favorite.findMany({
+      where: {
+        userId,
+      },
+      include: {
+        watch: {
+          include: {
+            brand: true,
+            images: true,
           },
         },
-        orderBy: {
-          createdAt: 'desc',
-        },
-      }),
-      prisma.favorite.count({
-        where: {
-          userId,
-        },
-      }),
-    ]);
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
 
     return {
       status: 200,
       message: "Favorites fetched successfully",
       data: {
         items: favorites,
-      },
-      meta: {
-        total,
-        page,
-        lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize,
       },
     };
   }

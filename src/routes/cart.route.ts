@@ -5,7 +5,7 @@ import { authMiddleware } from "../middlewares/auth.middleware";
 const cartRouter = Router();
 const cartController = new CartController();
 
-cartRouter.use(authMiddleware as any);
+cartRouter.use(authMiddleware);
 
 cartRouter.post("/add", cartController.addToCart);
 cartRouter.get("/:userId", cartController.getUserCart);

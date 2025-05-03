@@ -86,51 +86,35 @@ export class OrderService {
     }
   }
 
-  async findAllByUserId(userId: string, page = 1, limit = DEFAULT_PAGE_SIZE) {
-    const skip = (page - 1) * limit;
-
-    const [orders, total] = await Promise.all([
-      prisma.order.findMany({
-        where: { userId },
-        skip,
-        take: limit,
-        include: {
-          items: {
-            include: {
-              watch: {
-                select: {
-                  id: true,
-                  code: true,
-                  name: true,
-                  price: true,
-                  brand: true,
-                  images: true,
-                  description: true,
-                },
+  async findAllByUserId(userId: string) {
+    const orders = await prisma.order.findMany({
+      where: { userId },
+      include: {
+        items: {
+          include: {
+            watch: {
+              select: {
+                id: true,
+                code: true,
+                name: true,
+                price: true,
+                brand: true,
+                images: true,
+                description: true,
               },
             },
           },
-          address: true,
         },
-        orderBy: { createdAt: "desc" },
-      }),
-      prisma.order.count({ where: { userId } }),
-    ]);
-
-    const totalPages = Math.ceil(total / limit);
+        address: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
 
     return {
       status: 200,
       message: "Orders fetched successfully",
       data: {
         items: orders,
-      },
-      meta: {
-        total,
-        page,
-        totalPages,
-        lastPage: totalPages,
-        itemsPerPage: limit,
       },
     };
   }
