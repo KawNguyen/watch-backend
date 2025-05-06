@@ -5,6 +5,18 @@ const DEFAULT_PAGE_SIZE = 20;
 
 export class BrandService {
   async create(data: any) {
+    const existingBrand = await prisma.brand.findUnique({
+      where: { name: data.name },
+    });
+
+    if (existingBrand) {
+      return {
+        status: 400,
+        message: "Brand name already exists",
+        data: null,
+      };
+    }
+    
     const brand = await prisma.brand.create({ data });
 
     return {

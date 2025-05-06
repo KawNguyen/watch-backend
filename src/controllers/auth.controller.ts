@@ -9,27 +9,14 @@ export class AuthController {
     try {
       const user = await authService.register(req.body);
 
-      const token = jwt.sign(
-        { userId: user.userId },
-        process.env.JWT_SECRET as string,
-        { expiresIn: "24h" }
-      );
-
-      res.cookie("accessToken", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 24 * 60 * 60 * 1000,
-      });
-
       res.status(201).json({
         message: "Registration successful",
-        accessToken: token,
         user: {
           message: user.message,
           id: user.userId,
         },
       });
+
       return;
     } catch (error: any) {
       res.status(400).json({ message: error.message });
@@ -47,13 +34,6 @@ export class AuthController {
       }
 
       const loginResult = await authService.login({ email, password });
-
-      res.cookie("accessToken", loginResult.userId, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 5 * 60 * 1000, // 5 minutes
-      });
 
       res.status(200).json({
         user: {
@@ -81,7 +61,13 @@ export class AuthController {
 
       const verificationResult = await authService.verifyOTP(userId, otp);
 
-      res.cookie("accessToken", verificationResult.token, {
+      const token = jwt.sign(
+        { userId: verificationResult.user.id, role: verificationResult.user.role },
+        process.env.JWT_SECRET as string,
+        { expiresIn: "24h" }
+      );
+
+      res.cookie("accessToken", token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
@@ -90,7 +76,7 @@ export class AuthController {
 
       res.status(200).json({
         message: "Login successful",
-        accessToken: verificationResult.token,
+        accessToken: token,
         user: {
           id: verificationResult.user.id,
           email: verificationResult.user.email,
