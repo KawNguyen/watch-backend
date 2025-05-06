@@ -8,69 +8,102 @@ export class AuthController {
   async register(req: Request, res: Response) {
     try {
       const user = await authService.register(req.body);
-  
+
       const token = jwt.sign(
-        { id: user.id },
+        { userId: user.userId },
         process.env.JWT_SECRET as string,
         { expiresIn: "24h" }
       );
-  
+
       res.cookie("accessToken", token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
       });
-  
+
       res.status(201).json({
         message: "Registration successful",
         accessToken: token,
         user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role,
-          avatar: user.avatar,
+          message: user.message,
+          id: user.userId,
         },
       });
+      return;
     } catch (error: any) {
       res.status(400).json({ message: error.message });
+      return;
     }
   }
 
   async login(req: Request, res: Response) {
     try {
       const { email, password } = req.body;
-      const loginResult = await authService.login({ email, password });
-      const token = jwt.sign(
-        { id: loginResult.user.id },
-        process.env.JWT_SECRET as string,
-        {
-          expiresIn: "24h",
-        },
-      );
 
-      res.cookie("accessToken", token, {
+      if (!email || !password) {
+        res.status(400).json({ message: "Email and password are required" });
+        return;
+      }
+
+      const loginResult = await authService.login({ email, password });
+
+      res.cookie("accessToken", loginResult.userId, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 5 * 60 * 1000, // 5 minutes
+      });
+
+      res.status(200).json({
+        user: {
+          message: loginResult.message,
+          id: loginResult.userId,
+        },
+      });
+      return;
+    } catch (error: any) {
+      res.status(401).json({
+        message: error.message || "Login failed",
+      });
+      return;
+    }
+  }
+
+  async verifyOTP(req: Request, res: Response) {
+    try {
+      const { userId, otp } = req.body;
+
+      if (!userId || !otp) {
+        res.status(400).json({ message: "User ID and OTP are required" });
+        return;
+      }
+
+      const verificationResult = await authService.verifyOTP(userId, otp);
+
+      res.cookie("accessToken", verificationResult.token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
         maxAge: 24 * 60 * 60 * 1000,
       });
 
-      res.json({
+      res.status(200).json({
         message: "Login successful",
-        accessToken: token,
+        accessToken: verificationResult.token,
         user: {
-          id: loginResult.user.id,
-          email: loginResult.user.email,
-          name: loginResult.user.name,
-          role: loginResult.user.role,
-          avatar: loginResult.user.avatar,
-          
+          id: verificationResult.user.id,
+          email: verificationResult.user.email,
+          name: verificationResult.user.name,
+          role: verificationResult.user.role,
+          avatar: verificationResult.user.avatar,
         },
       });
     } catch (error: any) {
-      res.status(401).json({ message: error.message });
+      res.status(401).json({
+        message: error.message || "OTP verification failed",
+      });
+      return;
     }
   }
 

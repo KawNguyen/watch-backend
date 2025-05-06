@@ -5,6 +5,7 @@ const authController = new AuthController();
 
 authRouter.post("/register", authController.register);
 authRouter.post("/login", authController.login);
+authRouter.post("/verify-otp", authController.verifyOTP);
 authRouter.post("/logout", authController.logout);
 
 export default authRouter;

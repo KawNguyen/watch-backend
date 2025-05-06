@@ -47,6 +47,8 @@ model User {
   addresses    Address[]
   stockEntries StockEntry[]
   favorites    Favorite[]
+   otp        String?   
+  otpExpiry  DateTime?
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
