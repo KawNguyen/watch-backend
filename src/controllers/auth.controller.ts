@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { AuthService } from "../services/auth.service";
-import jwt from "jsonwebtoken";
 
 const authService = new AuthService();
 
@@ -61,13 +60,7 @@ export class AuthController {
 
       const verificationResult = await authService.verifyOTP(userId, otp);
 
-      const token = jwt.sign(
-        { userId: verificationResult.user.id, role: verificationResult.user.role },
-        process.env.JWT_SECRET as string,
-        { expiresIn: "24h" }
-      );
-
-      res.cookie("accessToken", token, {
+      res.cookie("accessToken", verificationResult.token, {
         httpOnly: true,
         secure: true,
         sameSite: "none",
@@ -76,7 +69,7 @@ export class AuthController {
 
       res.status(200).json({
         message: "Login successful",
-        accessToken: token,
+        accessToken: verificationResult.token,
         user: {
           id: verificationResult.user.id,
           email: verificationResult.user.email,
