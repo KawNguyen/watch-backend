@@ -1,7 +1,6 @@
 import { PrismaClient, OrderStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
-const DEFAULT_PAGE_SIZE = 10;
 
 export class OrderService {
   async create(userId: string, addressId: string) {
@@ -23,7 +22,13 @@ export class OrderService {
       where: { userId },
       include: {
         items: {
-          include: { watch: true },
+          include: { 
+            watch: {
+              include: {
+                quantities: true
+              }
+            }
+          },
         },
       },
     });
@@ -33,6 +38,16 @@ export class OrderService {
         status: 400,
         message: "Cart is empty",
       };
+    }
+
+    for (const item of cart.items) {
+      const quantity = item.watch.quantities[0]?.quantity || 0;
+      if (quantity < item.quantity) {
+        return {
+          status: 400,
+          message: `Insufficient stock for watch: ${item.watch.name}`,
+        };
+      }
     }
 
     const totalPrice = cart.items.reduce((total, item) => {
@@ -62,6 +77,22 @@ export class OrderService {
             address: true,
           },
         });
+
+        for (const item of cart.items) {
+          const quantityId = item.watch.quantities[0]?.id;
+          if (!quantityId) continue;
+
+          await tx.quantity.update({
+            where: {
+              id: quantityId
+            },
+            data: {
+              quantity: {
+                decrement: item.quantity
+              }
+            }
+          });
+        }
 
         await tx.cartItem.deleteMany({
           where: { cartId: cart.id },
