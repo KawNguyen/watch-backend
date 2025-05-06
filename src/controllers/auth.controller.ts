@@ -6,7 +6,14 @@ const authService = new AuthService();
 export class AuthController {
   async register(req: Request, res: Response) {
     try {
-      const user = await authService.register(req.body);
+      const { captchaToken, ...userData } = req.body;
+
+      if (!captchaToken) {
+        res.status(400).json({ message: "CAPTCHA token is required" });
+        return;
+      }
+
+      const user = await authService.register(userData, captchaToken);
 
       res.status(201).json({
         message: "Registration successful",

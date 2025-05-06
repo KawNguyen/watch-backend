@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { IUserLogin, IUserRegister } from "../@types/user.types";
 import { EmailService } from "./email.service";
+import axios from "axios";
 
 const prisma = new PrismaClient();
 const emailService = new EmailService();
@@ -12,7 +13,23 @@ export class AuthService {
     return Math.floor(100000 + Math.random() * 900000).toString();
   }
 
-  async register(userData: IUserRegister) {
+  async register(userData: IUserRegister, captchaToken: string) {
+    // Verify CAPTCHA
+    const captchaResponse = await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify`,
+      null,
+      {
+        params: {
+          secret: process.env.RECAPTCHA_SECRET_KEY,
+          response: captchaToken,
+        },
+      }
+    );
+
+    if (!captchaResponse.data.success) {
+      throw new Error("CAPTCHA verification failed");
+    }
+
     const existingUser = await prisma.user.findUnique({
       where: { email: userData.email },
     });
