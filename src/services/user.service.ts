@@ -93,15 +93,15 @@ export class UserService {
   async searchUsers(filters: {
       query?: string;
       page?: number;
-      pageSize?: number;
+      limit?: number;
     }) {
       const {
         query,
         page = 1,
-        pageSize = DEFAULT_PAGE_SIZE,
+        limit = DEFAULT_PAGE_SIZE,
       } = filters;
   
-      const skip = (page - 1) * pageSize;
+      const skip = (page - 1) * limit;
       const where: any = {};
   
       if (query) {
@@ -131,7 +131,7 @@ export class UserService {
         prisma.user.findMany({
           where,
           skip,
-          take: pageSize,
+          take: limit,
           select: {
             id: true,
             name: true,
@@ -158,8 +158,8 @@ export class UserService {
         meta: {
           total,
           page,
-          lastPage: Math.ceil(total / pageSize),
-          itemsPerPage: pageSize,
+          lastPage: Math.ceil(total / limit),
+          itemsPerPage: limit,
         },
       };
     }
@@ -237,6 +237,7 @@ export class UserService {
         phone: true,
         gender: true,
         paymentMethod: true,
+        role: true,
         addresses: {
           select: {
             id: true,

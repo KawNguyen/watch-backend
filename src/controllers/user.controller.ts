@@ -26,7 +26,7 @@ export class UserController {
     try {
       const { id } = req.params;
       const user = await userService.getUserById(id);
-      res.json(user);
+      res.status(200).json(user);
     } catch (error: any) {
       res.status(404).json({ message: error.message });
     }
@@ -37,7 +37,20 @@ export class UserController {
       const { id } = req.params;
       const userData = req.body;
       const user = await userService.updateUser(id, userData);
-      res.json(user);
+      res.status(200).json({
+        message: "User updated successfully",
+        user: {
+          id: user.data.item.id,
+          name: user.data.item.name,
+          email: user.data.item.email,
+          role: user.data.item.role,  
+          avatar: user.data.item.avatar,
+          // gender: user.data.item.gender,
+          // phone: user.data.item.phone,
+          // address: user.data.item.addresses,
+          // paymentMethod: user.data.item.paymentMethod,
+        },
+      });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -58,13 +71,13 @@ export class UserController {
       const {
         query,
         page,
-        pageSize
+        limit
       } = req.query;
 
       const filters = {
         query: query as string,
         page: page ? Number(page) : undefined,
-        pageSize: pageSize ? Number(pageSize) : undefined
+        pageSize: limit ? Number(limit) : undefined
       };
 
       const result = await userService.searchUsers(filters);

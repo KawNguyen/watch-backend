@@ -6,8 +6,7 @@ const stockEntryService = new StockEntryService();
 export class StockEntryController {
   async create(req: Request, res: Response) {
     try {
-      const addedById = req.user.id;
-      const { items } = req.body;
+      const {addedById, items } = req.body;
 
       if (!items || !Array.isArray(items) || items.length === 0) {
         res.status(400).json({
@@ -18,7 +17,6 @@ export class StockEntryController {
         return;
       }
 
-      // Validate each item in the array
       for (const item of items) {
         if (!item.watchId || !item.quantity || !item.price) {
           res.status(400).json({
