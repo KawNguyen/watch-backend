@@ -6,11 +6,13 @@ const DEFAULT_PAGE_SIZE = 10;
 export class StockEntryService {
   async create(
     addedById: string,
-    items: { watchId: string; quantity: number; price: number }[],
+    items: { watchId: string; quantity: number; price: number }[]
   ) {
     return await prisma.$transaction(async (tx) => {
-      // Calculate total price for the stock entry
-      const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const totalPrice = items.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      );
 
       const stockEntry = await tx.stockEntry.create({
         data: {
@@ -22,7 +24,7 @@ export class StockEntryService {
               quantity: item.quantity,
               price: item.price,
             })),
-          },  
+          },
         },
         include: {
           items: {
@@ -38,14 +40,22 @@ export class StockEntryService {
       });
 
       for (const item of items) {
-        await tx.quantity.upsert({
-          where: { id: item.watchId },
-          update: { quantity: { increment: item.quantity } },
-          create: {
-            watchId: item.watchId,
-            quantity: item.quantity,
-          },
+        const existing = await tx.quantity.findFirst({
+          where: { watchId: item.watchId }
         });
+        if (existing) {
+          await tx.quantity.update({
+            where: { id: existing.id },
+            data: { quantity: { increment: item.quantity } }
+          });
+        } else {
+          await tx.quantity.create({
+            data: {
+              watchId: item.watchId,
+              quantity: item.quantity
+            }
+          });
+        }
       }
 
       return stockEntry;
@@ -61,15 +71,15 @@ export class StockEntryService {
         take: limit,
         include: {
           items: {
-            include: { watch: 
-              {
+            include: {
+              watch: {
                 select: {
                   name: true,
                   images: true,
                   price: true,
                 },
-              }
-             },
+              },
+            },
           },
           addedBy: {
             select: {
@@ -120,7 +130,7 @@ export class StockEntryService {
     if (!stockEntry) {
       return {
         status: 404,
-        message: "Stock entry not found"
+        message: "Stock entry not found",
       };
     }
 
@@ -128,8 +138,8 @@ export class StockEntryService {
       status: 200,
       message: "Stock entry fetched successfully",
       data: {
-        item: stockEntry
-      }
+        item: stockEntry,
+      },
     };
   }
 
@@ -156,8 +166,8 @@ export class StockEntryService {
         orderBy: { createdAt: "desc" },
       }),
       prisma.stockItem.count({
-        where: { watchId }
-      })
+        where: { watchId },
+      }),
     ]);
 
     const totalPages = Math.ceil(total / limit);

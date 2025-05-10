@@ -15,6 +15,15 @@ export class OrderController {
     }
   }
 
+  async findAll(req: Request, res: Response) {
+    try {
+      const orders = await orderService.findAll();
+      res.status(200).json(orders);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
   async getOrdersByUserId(req: Request, res: Response) {
     try {
       const { userId } = req.params;
@@ -27,8 +36,8 @@ export class OrderController {
 
   async getOrder(req: Request, res: Response) {
     try {
-      const userId = (req as any).user.userId;
-      const order = await orderService.findOne(req.params.id, userId);
+      const { orderId } = req.body;
+      const order = await orderService.findOne(orderId);
       if (!order) {
         res.status(404).json({ message: "Order not found" });
       }
@@ -40,12 +49,12 @@ export class OrderController {
 
   async updateStatus(req: Request, res: Response) {
     try {
-      const { status } = req.body;
+      const { status, orderId } = req.body;
       if (!Object.values(OrderStatus).includes(status)) {
         res.status(400).json({ message: "Invalid status" });
         return;
       }
-      const order = await orderService.updateStatus(req.params.id, status);
+      const order = await orderService.updateStatus(orderId, status);
       res.json(order);
     } catch (error: any) {
       res.status(400).json({ message: error.message });

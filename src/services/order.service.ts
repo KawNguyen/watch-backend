@@ -22,12 +22,12 @@ export class OrderService {
       where: { userId },
       include: {
         items: {
-          include: { 
+          include: {
             watch: {
               include: {
-                quantities: true
-              }
-            }
+                quantities: true,
+              },
+            },
           },
         },
       },
@@ -84,13 +84,13 @@ export class OrderService {
 
           await tx.quantity.update({
             where: {
-              id: quantityId
+              id: quantityId,
             },
             data: {
               quantity: {
-                decrement: item.quantity
-              }
-            }
+                decrement: item.quantity,
+              },
+            },
           });
         }
 
@@ -115,6 +115,45 @@ export class OrderService {
         error: error instanceof Error ? error.message : "Unknown error",
       };
     }
+  }
+
+  async findAll() {
+    const orders = await prisma.order.findMany({
+      include: {
+        items: {
+          include: {
+            watch: {
+              select: {
+                id: true,
+                code: true,
+                name: true,
+                price: true,
+                brand: true,
+                images: true,
+                description: true,
+              },
+            },
+          },
+        },
+        user: {
+          select: {
+            email: true,
+            name: true,
+            phone: true,
+          },
+        },
+        address: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return {
+      status: 200,
+      message: "All orders fetched successfully",
+      data: {
+        items: orders,
+      },
+    };
   }
 
   async findAllByUserId(userId: string) {
@@ -150,11 +189,10 @@ export class OrderService {
     };
   }
 
-  async findOne(id: string, userId: string) {
+  async findOne(orderId: string) {
     const order = await prisma.order.findFirst({
       where: {
-        id,
-        userId,
+        id: orderId,
       },
       include: {
         items: {
@@ -180,10 +218,10 @@ export class OrderService {
     };
   }
 
-  async updateStatus(id: string, status: OrderStatus) {
+  async updateStatus(orderId: string, status: OrderStatus) {
     try {
       const updatedOrder = await prisma.order.update({
-        where: { id },
+        where: { id: orderId },
         data: { status },
         include: {
           items: {
