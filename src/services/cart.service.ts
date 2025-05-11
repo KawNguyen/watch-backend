@@ -41,7 +41,7 @@ export class CartService {
       return {
         status: 200,
         message: "Cart fetched successfully",
-        data: { item: cart },
+        data: cart,
       };
     } catch (error: any) {
       return {
@@ -137,7 +137,7 @@ export class CartService {
       return {
         status: 201,
         message: "Item added to cart successfully",
-        data: { item: newItem },
+        data: newItem,
       };
     } catch (error: any) {
       return {
@@ -215,7 +215,7 @@ export class CartService {
       return {
         status: 200,
         message: "Cart item quantity updated successfully",
-        data: { item: updatedItem },
+        data: updatedItem,
       };
     } catch (error: any) {
       return {

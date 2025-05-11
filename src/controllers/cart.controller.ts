@@ -62,6 +62,7 @@ export class CartController {
           status: 400,
           message: "Valid quantity is required",
         });
+        return;
       }
 
       const result = await cartService.updateQuantity(
@@ -70,19 +71,20 @@ export class CartController {
         quantity
       );
       res.status(result.status).json(result);
+      return;
     } catch (error: any) {
       res.status(500).json({
         status: 500,
         message: "Error updating cart item quantity",
         error: error.message,
       });
+      return;
     }
   }
 
   async removeFromCart(req: Request, res: Response) {
     try {
       const { userId, cartItemId } = req.body;
-
       const result = await cartService.removeItem(userId, cartItemId);
       res.status(result.status).json(result);
       return;
