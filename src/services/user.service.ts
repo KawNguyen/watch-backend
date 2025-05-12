@@ -23,7 +23,7 @@ export class UserService {
           updatedAt: true,
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
       }),
       prisma.user.count(),
@@ -50,7 +50,7 @@ export class UserService {
     const [users, total] = await Promise.all([
       prisma.user.findMany({
         where: {
-          role: 'CUSTOMER',
+          role: "CUSTOMER",
         },
         skip,
         take: pageSize,
@@ -65,12 +65,12 @@ export class UserService {
           updatedAt: true,
         },
         orderBy: {
-          createdAt: 'desc',
+          createdAt: "desc",
         },
       }),
       prisma.user.count({
         where: {
-          role: 'CUSTOMER',
+          role: "CUSTOMER",
         },
       }),
     ]);
@@ -91,78 +91,74 @@ export class UserService {
   }
 
   async searchUsers(filters: {
-      query?: string;
-      page?: number;
-      limit?: number;
-    }) {
-      const {
-        query,
-        page = 1,
-        limit = DEFAULT_PAGE_SIZE,
-      } = filters;
-  
-      const skip = (page - 1) * limit;
-      const where: any = {};
-  
-      if (query) {
-        where.OR = [
-          {
-            name: {
-              contains: query,
-              mode: 'insensitive',
-            }
+    query?: string;
+    page?: number;
+    limit?: number;
+  }) {
+    const { query, page = 1, limit = DEFAULT_PAGE_SIZE } = filters;
+
+    const skip = (page - 1) * limit;
+    const where: any = {};
+
+    if (query) {
+      where.OR = [
+        {
+          name: {
+            contains: query,
+            mode: "insensitive",
           },
-          {
-            email: {
-              contains: query,
-              mode: 'insensitive',
-            }
-          },
-          {
-            phone: {
-              contains: query,
-              mode: 'insensitive',
-            }
-          },
-        ];
-      }
-  
-      const [users, total] = await Promise.all([
-        prisma.user.findMany({
-          where,
-          skip,
-          take: limit,
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            role: true,
-            avatar: true,
-            phone: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-          orderBy: {
-            createdAt: 'desc',
-          },
-        }),
-        prisma.user.count({ where }),
-      ]);
-  
-      return {
-        status: 200,
-        message: "Users searched successfully",
-        data: {
-          items: users,
         },
-        meta: {
-          total,
-          page,
-          lastPage: Math.ceil(total / limit),
-          itemsPerPage: limit,
+        {
+          email: {
+            contains: query,
+            mode: "insensitive",
+          },
         },
-      };
+        {
+          phone: {
+            contains: query,
+            mode: "insensitive",
+          },
+        },
+      ];
     }
+
+    const [users, total] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          avatar: true,
+          phone: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      }),
+      prisma.user.count({ where }),
+    ]);
+
+    return {
+      status: 200,
+      message: "Users searched successfully",
+      data: {
+        items: users,
+      },
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+        itemsPerPage: limit,
+      },
+    };
+  }
 
   async getUserById(id: string) {
     const user = await prisma.user.findUnique({
@@ -184,7 +180,7 @@ export class UserService {
             ward: true,
             city: true,
             country: true,
-          }
+          },
         },
         createdAt: true,
         updatedAt: true,
@@ -208,15 +204,8 @@ export class UserService {
   }
 
   async updateUser(id: string, data: any) {
-    const {
-      name,
-      email,
-      phone,
-      avatar,
-      gender,
-      addresses,
-      paymentMethod,
-    } = data;
+    const { name, email, phone, avatar, gender, addresses, paymentMethod } =
+      data;
 
     const updatedUser = await prisma.user.update({
       where: { id },
@@ -246,7 +235,7 @@ export class UserService {
             ward: true,
             city: true,
             country: true,
-          }
+          },
         },
         createdAt: true,
         updatedAt: true,

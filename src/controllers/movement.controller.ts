@@ -55,20 +55,16 @@ export class MovementController {
 
   search = async (req: Request, res: Response) => {
     try {
-      const {
-        name,
-        page,
-        pageSize
-      } = req.query;
+      const { name, page, pageSize } = req.query;
       const filters = {
         name: name as string,
-        page: page? Number(page) : undefined,
-        pageSize: pageSize? Number(pageSize) : undefined
+        page: page ? Number(page) : undefined,
+        pageSize: pageSize ? Number(pageSize) : undefined,
       };
       const result = await movementService.search(filters.name);
       res.json(result);
     } catch (error) {
       res.status(500).json({ message: "Error searching movements", error });
     }
-  }
+  };
 }

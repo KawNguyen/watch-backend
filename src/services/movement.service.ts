@@ -20,7 +20,7 @@ export class MovementService {
           updatedAt: true,
         },
         orderBy: {
-          name: 'asc',
+          name: "asc",
         },
       }),
       prisma.movement.count(),
@@ -49,7 +49,7 @@ export class MovementService {
         where: {
           name: {
             contains: name,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
         },
         skip,
@@ -62,14 +62,14 @@ export class MovementService {
           updatedAt: true,
         },
         orderBy: {
-          name: 'asc',
+          name: "asc",
         },
       }),
       prisma.movement.count({
         where: {
           name: {
             contains: name,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
         },
       }),

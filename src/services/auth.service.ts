@@ -23,7 +23,7 @@ export class AuthService {
           secret: process.env.RECAPTCHA_SECRET_KEY,
           response: captchaToken,
         },
-      }
+      },
     );
 
     if (!captchaResponse.data.success) {
@@ -79,7 +79,7 @@ export class AuthService {
 
     const isValidPassword = await bcrypt.compare(
       credentials.password,
-      user.password
+      user.password,
     );
 
     if (!isValidPassword) {
@@ -143,7 +143,7 @@ export class AuthService {
     const token = jwt.sign(
       { userId: user.id, role: user.role },
       process.env.JWT_SECRET as string,
-      { expiresIn: "24h" }
+      { expiresIn: "24h" },
     );
 
     return { token, user: { ...user, password: undefined } };

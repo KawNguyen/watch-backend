@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { WatchService } from "../services/watch.service";
-import { WatchGender } from "@prisma/client";  // Add this import
+import { WatchGender } from "@prisma/client"; // Add this import
 
 const watchService = new WatchService();
 
@@ -85,7 +85,7 @@ export class WatchController {
       const result = await watchService.getWatchesByBrand(
         brandId,
         page,
-        pageSize
+        pageSize,
       );
       res.status(result.status).json(result);
     } catch (error: any) {
@@ -105,7 +105,7 @@ export class WatchController {
       const result = await watchService.getWatchesByMovement(
         movementName,
         page,
-        limit
+        limit,
       );
       res.status(result.status).json(result);
     } catch (error: any) {
@@ -117,44 +117,46 @@ export class WatchController {
   }
 
   async filterWatches(req: Request, res: Response) {
-      try {
-        const {
-          brand,
-          bandMaterial,
-          material,
-          movement,
-          gender,
-          diameter,
-          waterResistance,
-          warranty,
-          minPrice,
-          maxPrice,
-          page,
-          limit
-        } = req.query;
-  
-        const filters = {
-          brandName: brand as string,
-          bandMaterialName: bandMaterial as string,
-          materialName: material as string,
-          movementName: movement as string,
-          gender: gender ? (gender as string).toUpperCase() as WatchGender : undefined,  // Convert to uppercase and cast to enum
-          diameter: diameter ? Number(diameter) : undefined,
-          waterResistance: waterResistance ? Number(waterResistance) : undefined,
-          warranty: warranty ? Number(warranty) : undefined,
-          minPrice: minPrice ? Number(minPrice) : undefined,
-          maxPrice: maxPrice ? Number(maxPrice) : undefined,
-          page: page ? Number(page) : undefined,
-          limit: limit ? Number(limit) : undefined,
-        };
-  
-        const result = await watchService.filterWatches(filters);
-        res.status(result.status).json(result);
-      } catch (error: any) {
-        res.status(400).json({
-          status: 400,
-          message: error.message,
-        });
-      }
+    try {
+      const {
+        brand,
+        bandMaterial,
+        material,
+        movement,
+        gender,
+        diameter,
+        waterResistance,
+        warranty,
+        minPrice,
+        maxPrice,
+        page,
+        limit,
+      } = req.query;
+
+      const filters = {
+        brandName: brand as string,
+        bandMaterialName: bandMaterial as string,
+        materialName: material as string,
+        movementName: movement as string,
+        gender: gender
+          ? ((gender as string).toUpperCase() as WatchGender)
+          : undefined, // Convert to uppercase and cast to enum
+        diameter: diameter ? Number(diameter) : undefined,
+        waterResistance: waterResistance ? Number(waterResistance) : undefined,
+        warranty: warranty ? Number(warranty) : undefined,
+        minPrice: minPrice ? Number(minPrice) : undefined,
+        maxPrice: maxPrice ? Number(maxPrice) : undefined,
+        page: page ? Number(page) : undefined,
+        limit: limit ? Number(limit) : undefined,
+      };
+
+      const result = await watchService.filterWatches(filters);
+      res.status(result.status).json(result);
+    } catch (error: any) {
+      res.status(400).json({
+        status: 400,
+        message: error.message,
+      });
     }
+  }
 }

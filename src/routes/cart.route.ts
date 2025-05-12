@@ -9,7 +9,10 @@ cartRouter.use(authMiddleware);
 
 cartRouter.post("/add", cartController.addToCart);
 cartRouter.get("/:userId", cartController.getUserCart);
-cartRouter.put("/:userId/update-quantity/:cartItemId", cartController.updateQuantity);
+cartRouter.put(
+  "/:userId/update-quantity/:cartItemId",
+  cartController.updateQuantity,
+);
 cartRouter.delete("/:userId/remove/:cartItemId", cartController.removeFromCart);
 cartRouter.delete("/clear", cartController.clearCart);
 

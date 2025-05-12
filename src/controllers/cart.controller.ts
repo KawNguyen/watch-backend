@@ -68,7 +68,7 @@ export class CartController {
       const result = await cartService.updateQuantity(
         userId,
         cartItemId,
-        quantity
+        quantity,
       );
       res.status(result.status).json(result);
       return;

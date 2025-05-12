@@ -16,17 +16,17 @@ export class QuantityService {
             include: {
               brand: true,
               images: true,
-              movement:true,
-              material:true,
-              bandMaterial:true,
-            }
-          }
+              movement: true,
+              material: true,
+              bandMaterial: true,
+            },
+          },
         },
         orderBy: {
-          updatedAt: 'desc'
-        }
+          updatedAt: "desc",
+        },
       }),
-      prisma.quantity.count()
+      prisma.quantity.count(),
     ]);
 
     const totalPages = Math.ceil(total / limit);
@@ -35,15 +35,15 @@ export class QuantityService {
       status: 200,
       message: "Quantities fetched successfully",
       data: {
-        items: quantities
+        items: quantities,
       },
       meta: {
         total,
         page,
         totalPages,
         lastPage: totalPages,
-        itemsPerPage: limit
-      }
+        itemsPerPage: limit,
+      },
     };
   }
 
@@ -54,16 +54,16 @@ export class QuantityService {
         watch: {
           include: {
             brand: true,
-            images: true
-          }
-        }
-      }
+            images: true,
+          },
+        },
+      },
     });
 
     if (!quantity) {
       return {
         status: 404,
-        message: "Quantity not found"
+        message: "Quantity not found",
       };
     }
 
@@ -71,8 +71,8 @@ export class QuantityService {
       status: 200,
       message: "Quantity fetched successfully",
       data: {
-        item: quantity
-      }
+        item: quantity,
+      },
     };
   }
 
@@ -83,16 +83,16 @@ export class QuantityService {
         watch: {
           include: {
             brand: true,
-            images: true
-          }
-        }
-      }
+            images: true,
+          },
+        },
+      },
     });
 
     if (!quantity) {
       return {
         status: 404,
-        message: "Quantity not found for this watch"
+        message: "Quantity not found for this watch",
       };
     }
 
@@ -100,8 +100,8 @@ export class QuantityService {
       status: 200,
       message: "Quantity fetched successfully",
       data: {
-        item: quantity
-      }
+        item: quantity,
+      },
     };
   }
 
@@ -117,7 +117,7 @@ export class QuantityService {
       minQuantity,
       maxQuantity,
       page = 1,
-      limit = DEFAULT_PAGE_SIZE
+      limit = DEFAULT_PAGE_SIZE,
     } = filters;
 
     const skip = (page - 1) * limit;
@@ -129,32 +129,32 @@ export class QuantityService {
           {
             name: {
               contains: search,
-              mode: 'insensitive'
-            }
+              mode: "insensitive",
+            },
           },
           {
             brand: {
               name: {
                 contains: search,
-                mode: 'insensitive'
-              }
-            }
-          }
-        ]
+                mode: "insensitive",
+              },
+            },
+          },
+        ],
       };
     }
 
     if (minQuantity !== undefined) {
       where.quantity = {
         ...where.quantity,
-        gte: minQuantity
+        gte: minQuantity,
       };
     }
 
     if (maxQuantity !== undefined) {
       where.quantity = {
         ...where.quantity,
-        lte: maxQuantity
+        lte: maxQuantity,
       };
     }
 
@@ -168,17 +168,17 @@ export class QuantityService {
             include: {
               brand: true,
               images: true,
-              movement:true,
-              material:true,
-              bandMaterial:true,
-            }
-          }
+              movement: true,
+              material: true,
+              bandMaterial: true,
+            },
+          },
         },
         orderBy: {
-          updatedAt: 'desc'
-        }
+          updatedAt: "desc",
+        },
       }),
-      prisma.quantity.count({ where })
+      prisma.quantity.count({ where }),
     ]);
 
     const totalPages = Math.ceil(total / limit);
@@ -187,15 +187,15 @@ export class QuantityService {
       status: 200,
       message: "Quantities searched successfully",
       data: {
-        items: quantities
+        items: quantities,
       },
       meta: {
         total,
         page,
         totalPages,
         lastPage: totalPages,
-        itemsPerPage: limit
-      }
+        itemsPerPage: limit,
+      },
     };
   }
 }

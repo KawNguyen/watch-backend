@@ -1,7 +1,11 @@
 import { CorsOptions } from "cors";
 
 const corsOptions: CorsOptions = {
-  origin: ["http://localhost:5173", "https://watch-frontend-wgv9.vercel.app", "https://lux-watch.vercel.app"],
+  origin: [
+    "http://localhost:5173",
+    "https://watch-frontend-wgv9.vercel.app",
+    "https://lux-watch.vercel.app",
+  ],
   credentials: true,
 };
 

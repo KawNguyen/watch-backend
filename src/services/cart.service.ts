@@ -67,7 +67,7 @@ export class CartService {
 
       const totalStock = watch.quantities.reduce(
         (sum, q) => sum + q.quantity,
-        0
+        0,
       );
 
       const existingItem = await prisma.cartItem.findFirst({
@@ -185,7 +185,7 @@ export class CartService {
 
       const totalStock = cartItem.watch.quantities.reduce(
         (sum, q) => sum + q.quantity,
-        0
+        0,
       );
       if (quantity > totalStock) {
         throw new Error("Requested quantity exceeds available stock");

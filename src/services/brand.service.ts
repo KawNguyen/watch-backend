@@ -16,7 +16,7 @@ export class BrandService {
         data: null,
       };
     }
-    
+
     const brand = await prisma.brand.create({ data });
 
     return {

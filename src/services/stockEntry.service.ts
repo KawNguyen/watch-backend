@@ -6,12 +6,12 @@ const DEFAULT_PAGE_SIZE = 10;
 export class StockEntryService {
   async create(
     addedById: string,
-    items: { watchId: string; quantity: number; price: number }[]
+    items: { watchId: string; quantity: number; price: number }[],
   ) {
     return await prisma.$transaction(async (tx) => {
       const totalPrice = items.reduce(
         (sum, item) => sum + item.price * item.quantity,
-        0
+        0,
       );
 
       const stockEntry = await tx.stockEntry.create({
@@ -41,19 +41,19 @@ export class StockEntryService {
 
       for (const item of items) {
         const existing = await tx.quantity.findFirst({
-          where: { watchId: item.watchId }
+          where: { watchId: item.watchId },
         });
         if (existing) {
           await tx.quantity.update({
             where: { id: existing.id },
-            data: { quantity: { increment: item.quantity } }
+            data: { quantity: { increment: item.quantity } },
           });
         } else {
           await tx.quantity.create({
             data: {
               watchId: item.watchId,
-              quantity: item.quantity
-            }
+              quantity: item.quantity,
+            },
           });
         }
       }

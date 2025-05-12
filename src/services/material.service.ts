@@ -20,7 +20,7 @@ export class MaterialService {
           updatedAt: true,
         },
         orderBy: {
-          name: 'asc',
+          name: "asc",
         },
       }),
       prisma.material.count(),
@@ -49,7 +49,7 @@ export class MaterialService {
         where: {
           name: {
             contains: name,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
         },
         skip,
@@ -62,14 +62,14 @@ export class MaterialService {
           updatedAt: true,
         },
         orderBy: {
-          name: 'asc',
+          name: "asc",
         },
       }),
       prisma.material.count({
         where: {
           name: {
             contains: name,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
         },
       }),

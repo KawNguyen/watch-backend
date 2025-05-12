@@ -12,6 +12,10 @@ orderRouter.get("/", adminMiddleware, orderController.findAll);
 orderRouter.post("/create", orderController.create);
 orderRouter.get("/:userId", orderController.getOrdersByUserId);
 orderRouter.get("/detail/:orderId", orderController.getOrder);
-orderRouter.put("/status/:orderId", adminMiddleware, orderController.updateStatus);
+orderRouter.put(
+  "/status/:orderId",
+  adminMiddleware,
+  orderController.updateStatus,
+);
 
 export default orderRouter;

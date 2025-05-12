@@ -7,9 +7,23 @@ const quantityRouter = Router();
 const quantityController = new QuantityController();
 
 quantityRouter.get("/watch/:watchId", quantityController.findByWatch);
-quantityRouter.get("/search", authMiddleware, adminMiddleware, quantityController.search);
-quantityRouter.get("/", authMiddleware, adminMiddleware, quantityController.findAll);
-quantityRouter.get("/:id", authMiddleware, adminMiddleware, quantityController.findOne);
-
+quantityRouter.get(
+  "/search",
+  authMiddleware,
+  adminMiddleware,
+  quantityController.search,
+);
+quantityRouter.get(
+  "/",
+  authMiddleware,
+  adminMiddleware,
+  quantityController.findAll,
+);
+quantityRouter.get(
+  "/:id",
+  authMiddleware,
+  adminMiddleware,
+  quantityController.findOne,
+);
 
 export default quantityRouter;

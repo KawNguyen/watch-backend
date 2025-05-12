@@ -10,21 +10,21 @@ userRouter.get(
   "/search",
   authMiddleware,
   adminMiddleware,
-  userController.searchUsers
+  userController.searchUsers,
 );
 
 userRouter.get(
   "/customers",
   authMiddleware,
   adminMiddleware,
-  userController.getAllCustomers
+  userController.getAllCustomers,
 );
 
 userRouter.get(
   "/",
   authMiddleware,
   adminMiddleware,
-  userController.getAllUsers
+  userController.getAllUsers,
 );
 userRouter.get("/:id", authMiddleware, userController.getUserById);
 userRouter.put("/update/:id", authMiddleware, userController.updateUser);

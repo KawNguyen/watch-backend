@@ -78,7 +78,7 @@ export class FavoriteService {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 

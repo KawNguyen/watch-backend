@@ -19,7 +19,7 @@ export class BandMaterialService {
           updatedAt: true,
         },
         orderBy: {
-          name: 'asc',
+          name: "asc",
         },
       }),
       prisma.bandMaterial.count(),
@@ -48,7 +48,7 @@ export class BandMaterialService {
         where: {
           name: {
             contains: name,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
         },
         skip,
@@ -61,14 +61,14 @@ export class BandMaterialService {
           updatedAt: true,
         },
         orderBy: {
-          name: 'asc',
+          name: "asc",
         },
       }),
       prisma.bandMaterial.count({
         where: {
           name: {
             contains: name,
-            mode: 'insensitive',
+            mode: "insensitive",
           },
         },
       }),

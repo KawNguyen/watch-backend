@@ -9,7 +9,10 @@ favoriteRouter.use(authMiddleware);
 
 favoriteRouter.post("/add", favoriteController.addToFavorites);
 favoriteRouter.get("/:userId", favoriteController.getUserFavorites);
-favoriteRouter.delete("/:userId/remove/:watchId", favoriteController.removeFromFavorites);
+favoriteRouter.delete(
+  "/:userId/remove/:watchId",
+  favoriteController.removeFromFavorites,
+);
 favoriteRouter.get("/check/:watchId", favoriteController.checkFavorite);
 
 export default favoriteRouter;
