@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
-const DEFAULT_PAGE_SIZE = 20;
 
 export class FavoriteService {
   async addToFavorites(userId: string, watchId: string) {
