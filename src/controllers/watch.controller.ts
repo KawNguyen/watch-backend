@@ -8,8 +8,8 @@ export class WatchController {
   findAll = async (req: Request, res: Response) => {
     try {
       const page = parseInt(req.query.page as string) || 1;
-      const pageSize = parseInt(req.query.pageSize as string) || 12;
-      const result = await watchService.findAll(page, pageSize);
+      const limit = parseInt(req.query.limit as string) || 12;
+      const result = await watchService.findAll(page, limit);
       res.json(result);
     } catch (error) {
       res.status(500).json({ message: "Error fetching watches", error });

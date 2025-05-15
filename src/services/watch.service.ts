@@ -1,7 +1,7 @@
 import { PrismaClient, WatchGender } from "@prisma/client";
 
 const prisma = new PrismaClient();
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = 12;
 
 export class WatchService {
   async create(data: any) {
