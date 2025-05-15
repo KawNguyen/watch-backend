@@ -14,12 +14,14 @@ const watchController = new WatchController();
  *     summary: Search
  *     parameters:
  *       - in: query
- *         name: q
+ *         name: query
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Thành công
+ *         description: Success
+ *       400:
+ *         description: Bad Request
  */
 watchRouter.get("/search", watchController.search);
 /**

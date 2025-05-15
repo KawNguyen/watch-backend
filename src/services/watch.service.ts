@@ -152,24 +152,22 @@ export class WatchService {
     };
   }
 
-  async search(filters: { name?: string; page?: number; limit?: number }) {
-    const { name, page = 1, limit = DEFAULT_PAGE_SIZE } = filters;
+  async search(query?: string) {
 
-    const skip = (page - 1) * limit;
     const where: any = {};
 
-    if (name) {
+    if (query) {
       where.OR = [
         {
           name: {
-            contains: name,
+            contains: query,
             mode: "insensitive",
           },
         },
         {
           brand: {
             name: {
-              contains: name,
+              contains: query,
               mode: "insensitive",
             },
           },
@@ -180,8 +178,6 @@ export class WatchService {
     const [watches, total] = await Promise.all([
       prisma.watch.findMany({
         where,
-        skip,
-        take: limit,
         select: {
           id: true,
           code: true,
@@ -206,7 +202,6 @@ export class WatchService {
       prisma.watch.count({ where }),
     ]);
 
-    const totalPages = Math.ceil(total / limit);
 
     return {
       status: 200,
@@ -216,10 +211,10 @@ export class WatchService {
       },
       meta: {
         total,
-        page,
-        totalPages,
-        lastPage: Math.ceil(total / limit),
-        itemsPerPage: limit,
+        page: 1,
+        totalPages: 1,
+        lastPage: 1,
+        itemsPerPage: total,
       },
     };
   }

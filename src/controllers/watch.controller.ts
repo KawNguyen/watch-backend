@@ -58,15 +58,8 @@ export class WatchController {
 
   async search(req: Request, res: Response) {
     try {
-      const { name, page, pageSize } = req.query;
-
-      const filters = {
-        name: name as string,
-        page: page ? Number(page) : undefined,
-        pageSize: pageSize ? Number(pageSize) : undefined,
-      };
-
-      const result = await watchService.search(filters);
+      const { query } = req.query;
+      const result = await watchService.search(query as string);
       res.json(result);
     } catch (error: any) {
       res.status(500).json({
