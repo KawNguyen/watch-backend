@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { WatchService } from "../services/watch.service";
-import { WatchGender } from "@prisma/client"; // Add this import
+import { WatchGender } from "@prisma/client";
 
 const watchService = new WatchService();
 

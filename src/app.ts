@@ -17,6 +17,9 @@ import cookieParser from "cookie-parser";
 import userRouter from "./routes/user.routes";
 import favoriteRouter from "./routes/favorite.routes";
 import quantityRouter from "./routes/quantity.route";
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from "./config/swagger";
+
 
 dotenv.config();
 const apiType = "/v1/api";
@@ -41,5 +44,6 @@ app.use(`${apiType}/users`, userRouter);
 app.use(`${apiType}/favorites`, favoriteRouter);
 app.use(`${apiType}/quantities`, quantityRouter);
 app.use(errorMiddleware);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 export default app;
