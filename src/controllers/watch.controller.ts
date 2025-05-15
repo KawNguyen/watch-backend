@@ -8,7 +8,7 @@ export class WatchController {
   findAll = async (req: Request, res: Response) => {
     try {
       const page = parseInt(req.query.page as string) || 1;
-      const pageSize = parseInt(req.query.pageSize as string) || 10;
+      const pageSize = parseInt(req.query.pageSize as string) || 12;
       const result = await watchService.findAll(page, pageSize);
       res.json(result);
     } catch (error) {

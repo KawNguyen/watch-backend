@@ -84,6 +84,15 @@ watchRouter.get("/filter", watchController.filterWatches);
  * /v1/api/watches:
  *   get:
  *     summary: Get all watches
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: number
  *     responses:
  *       200:
  *         description: Success
