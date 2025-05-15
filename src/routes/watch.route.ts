@@ -12,6 +12,11 @@ const watchController = new WatchController();
  * /v1/api/watches/search:
  *   get:
  *     summary: Search
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: Thành công
@@ -80,6 +85,8 @@ watchRouter.get("/filter", watchController.filterWatches);
  *     responses:
  *       200:
  *         description: Success
+ *       400:
+ *         description: Bad Request
  *       500:
  *         description: Internal Server Error
  */
@@ -89,7 +96,6 @@ watchRouter.get(
   "/movement/:movementName",
   watchController.getWatchesByMovement,
 );
-watchRouter.get("/", watchController.findAll);
 /**
  * @swagger
  * /v1/api/watches/{id}:

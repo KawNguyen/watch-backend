@@ -341,7 +341,7 @@ export class WatchService {
     bandMaterialName?: string;
     materialName?: string;
     movementName?: string;
-    gender?: WatchGender; // Change type to WatchGender
+    gender?: WatchGender;
     diameter?: number;
     waterResistance?: number;
     warranty?: number;
@@ -401,7 +401,7 @@ export class WatchService {
       };
     }
     if (gender) {
-      where.gender = gender as WatchGender; // Cast to WatchGender enum
+      where.gender = gender as WatchGender;
     }
     if (diameter) {
       where.diameter = diameter;

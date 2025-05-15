@@ -140,7 +140,7 @@ export class WatchController {
         movementName: movement as string,
         gender: gender
           ? ((gender as string).toUpperCase() as WatchGender)
-          : undefined, // Convert to uppercase and cast to enum
+          : undefined,
         diameter: diameter ? Number(diameter) : undefined,
         waterResistance: waterResistance ? Number(waterResistance) : undefined,
         warranty: warranty ? Number(warranty) : undefined,
