@@ -78,7 +78,7 @@ watchRouter.get("/search", watchController.search);
  *       500:
  *         description: Internal Server Error
  */
-watchRouter.get("/filter", watchController.filterWatches);
+watchRouter.get("/", watchController.filterWatches);
 /**
  * @swagger
  * /v1/api/watches:
