@@ -10,8 +10,11 @@ const options = {
     },
     servers: [
       {
-        url: "https://watch-backend-production.up.railway.app",
+        url: "http://localhost:3000"
       },
+      {
+        url: "https://watch-backend-production.up.railway.app"
+      }
     ],
   },
   apis: ["./src/routes/*.ts", "./src/controllers/*.ts"], // Đường dẫn tới các file chứa swagger comment
