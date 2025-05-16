@@ -5,17 +5,6 @@ import { WatchGender } from "@prisma/client";
 const watchService = new WatchService();
 
 export class WatchController {
-  // findAll = async (req: Request, res: Response) => {
-  //   try {
-  //     const page = parseInt(req.query.page as string) || 1;
-  //     const limit = parseInt(req.query.limit as string) || 12;
-  //     const result = await watchService.findAll(page, limit);
-  //     res.json(result);
-  //   } catch (error) {
-  //     res.status(500).json({ message: "Error fetching watches", error });
-  //   }
-  // };
-
   async findOne(req: Request, res: Response) {
     try {
       const watch = await watchService.findOne(req.params.id);
@@ -56,27 +45,14 @@ export class WatchController {
     }
   }
 
-  // async search(req: Request, res: Response) {
-  //   try {
-  //     const { query } = req.query;
-  //     const result = await watchService.search(query as string);
-  //     res.json(result);
-  //   } catch (error: any) {
-  //     res.status(500).json({
-  //       message: "Error searching watches",
-  //       error: error.message,
-  //     });
-  //   }
-  // }
-
   async getWatchesByBrand(req: Request, res: Response) {
     try {
-      const brandId = req.params.brandId;
+      const brandSlug = req.params.brandSlug;
       const page = Number(req.query.page) || 1;
-      const pageSize = Number(req.query.pageSize) || 20;
+      const pageSize = Number(req.query.pageSize) || 12;
 
       const result = await watchService.getWatchesByBrand(
-        brandId,
+        brandSlug,
         page,
         pageSize,
       );

@@ -37,20 +37,20 @@ model User {
   name          String
   email         String        @unique
   password      String
-  avatar        String?       
+  avatar        String?
   phone         String?
   gender        UserGender?
-  paymentMethod PaymentMethod @default(COD)  // Add this field
+  paymentMethod PaymentMethod @default(COD) // Add this field
   role          UserRole      @default(CUSTOMER)
-  cart         Cart?
-  orders       Order[]
-  addresses    Address[]
-  stockEntries StockEntry[]
-  favorites    Favorite[]
-   otp        String?   
-  otpExpiry  DateTime?
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  cart          Cart?
+  orders        Order[]
+  addresses     Address[]
+  stockEntries  StockEntry[]
+  favorites     Favorite[]
+  otp           String?
+  otpExpiry     DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 // Address Table (Shipping Address) 
@@ -58,26 +58,27 @@ model Address {
   id        String   @id @default(uuid())
   user      User     @relation(fields: [userId], references: [id])
   userId    String
-  street    String?   // Đường phố
+  street    String? // Đường phố
   district  String?
-  ward      String?   // Phường/Xã
-  city      String?   // Thành phố
-  country   String?   // Quốc gia
-  orders    Order[]  
+  ward      String? // Phường/Xã
+  city      String? // Thành phố
+  country   String? // Quốc gia
+  orders    Order[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // Brand Table
 model Brand {
-  id          String   @id @default(uuid())
-  code        String   @unique @default(dbgenerated("concat('BR', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 8)))"))
-  name        String   @unique @db.VarChar(100)
-  country     String?  @db.VarChar(100)
-  logo        String?  
-  watches     Watch[]  // Quan hệ với Watch
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(uuid())
+  slug      String?  @unique
+  code      String   @unique @default(dbgenerated("concat('BR', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 8)))"))
+  name      String   @unique @db.VarChar(100)
+  country   String?  @db.VarChar(100)
+  logo      String?
+  watches   Watch[] // Quan hệ với Watch
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([name])
 }
@@ -85,6 +86,7 @@ model Brand {
 // Material Table (Case Materials)
 model Material {
   id        String   @id @default(uuid())
+  slug      String?  @unique
   code      String   @unique @default(dbgenerated("concat('MT', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 8)))"))
   name      String   @unique
   watches   Watch[]
@@ -97,6 +99,7 @@ model Material {
 // Band Material Table
 model BandMaterial {
   id        String   @id @default(uuid())
+  slug      String?  @unique
   code      String   @unique @default(dbgenerated("concat('BM', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 8)))"))
   name      String   @unique
   watches   Watch[]
@@ -109,6 +112,7 @@ model BandMaterial {
 // Movement Table
 model Movement {
   id        String   @id @default(uuid())
+  slug      String?  @unique
   code      String   @unique @default(dbgenerated("concat('MV', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 8)))"))
   name      String   @unique
   watches   Watch[]
@@ -120,32 +124,33 @@ model Movement {
 
 // Update Watch model to use relations
 model Watch {
-  id              String       @id @default(uuid())
-  code            String       @unique @default(dbgenerated("concat('W', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 9)))"))
-  name            String       @db.VarChar(100)
-  description     String?      @db.Text
+  id              String        @id @default(uuid())
+  slug            String?       @unique
+  code            String        @unique @default(dbgenerated("concat('W', upper(substring(replace(cast(gen_random_uuid() as varchar), '-', ''), 1, 9)))"))
+  name            String        @db.VarChar(100)
+  description     String?       @db.Text
   price           Float
-  gender          WatchGender  @default(UNISEX)
-  brandId         String      
-  brand           Brand        @relation(fields: [brandId], references: [id])
+  gender          WatchGender   @default(UNISEX)
+  brandId         String
+  brand           Brand         @relation(fields: [brandId], references: [id])
   materialId      String?
-  material        Material?    @relation(fields: [materialId], references: [id])
+  material        Material?     @relation(fields: [materialId], references: [id])
   bandMaterialId  String?
   bandMaterial    BandMaterial? @relation(fields: [bandMaterialId], references: [id])
   movementId      String?
-  movement        Movement?    @relation(fields: [movementId], references: [id])
-  diameter        Float?       // in millimeters
-  waterResistance Int?        // in meters
-  warranty        Int          @default(24)     // in months
-  videoUrl        String? 
+  movement        Movement?     @relation(fields: [movementId], references: [id])
+  diameter        Float? // in millimeters
+  waterResistance Int? // in meters
+  warranty        Int           @default(24) // in months
+  videoUrl        String?
   images          Image[]
   stockItems      StockItem[]
   cartItems       CartItem[]
   orderItems      OrderItem[]
-  quantities      Quantity[]   // This will handle the stock management
+  quantities      Quantity[] // This will handle the stock management
   favorites       Favorite[]
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model Quantity {
@@ -176,7 +181,7 @@ model Favorite {
 // Image Table (Watch Images)
 model Image {
   id        String   @id @default(uuid())
-  url       String   // Đường dẫn ảnh
+  url       String // Đường dẫn ảnh
   watch     Watch    @relation(fields: [watchId], references: [id])
   watchId   String
   createdAt DateTime @default(now())
@@ -189,8 +194,8 @@ model Cart {
   user      User       @relation(fields: [userId], references: [id])
   userId    String     @unique // Mỗi user chỉ có một giỏ hàng
   items     CartItem[]
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 // Cart Item Table (Items in Cart)
@@ -208,13 +213,13 @@ model CartItem {
 // Stock Entry Table (Lưu thông tin nhập hàng)
 // Stock Entry Table
 model StockEntry {
-  id          String      @id @default(uuid())
-  addedBy     User        @relation(fields: [addedById], references: [id])
-  addedById   String
-  items       StockItem[]
-  totalPrice  Float       // Add total price for entire stock entry
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id         String      @id @default(uuid())
+  addedBy    User        @relation(fields: [addedById], references: [id])
+  addedById  String
+  items      StockItem[]
+  totalPrice Float // Add total price for entire stock entry
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }
 
 // Stock Item Table
@@ -225,23 +230,23 @@ model StockItem {
   watch        Watch      @relation(fields: [watchId], references: [id])
   watchId      String
   quantity     Int        @default(1)
-  price        Float      // Add price per unit
+  price        Float // Add price per unit
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 }
 
 // Order Table
 model Order {
-  id          String      @id @default(uuid())
-  user        User        @relation(fields: [userId], references: [id])
-  userId      String
-  address     Address?    @relation(fields: [addressId], references: [id])
-  addressId   String?     // Liên kết với địa chỉ giao hàng
-  items       OrderItem[]
-  totalPrice  Float
-  status      OrderStatus @default(PENDING)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id         String      @id @default(uuid())
+  user       User        @relation(fields: [userId], references: [id])
+  userId     String
+  address    Address?    @relation(fields: [addressId], references: [id])
+  addressId  String? // Liên kết với địa chỉ giao hàng
+  items      OrderItem[]
+  totalPrice Float
+  status     OrderStatus @default(PENDING)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }
 
 // Order Item Table
@@ -252,7 +257,7 @@ model OrderItem {
   watch     Watch    @relation(fields: [watchId], references: [id])
   watchId   String
   quantity  Int      @default(1)
-  price     Float    // Giá tại thời điểm đặt hàng
+  price     Float // Giá tại thời điểm đặt hàng
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

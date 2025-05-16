@@ -66,8 +66,26 @@ const watchController = new WatchController();
  */
 watchRouter.get("/", watchController.getWatches);
 
-// watchRouter.get("/", watchController.findAll);
-watchRouter.get("/brand/:brandId", watchController.getWatchesByBrand);
+/**
+ * @swagger
+ * /v1/api/watches/brand/{brandSlug}:
+ *   get:
+ *     summary: Get watches by brand
+ *     parameters:
+ *       - in: path
+ *         name: brandSlug
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200: 
+ *         description: Success
+ *       404:
+ *         description: Not Found
+ *       500:
+ *         description: Internal Server Error
+ */
+watchRouter.get("/brand/:brandSlug", watchController.getWatchesByBrand);
 watchRouter.get(
   "/movement/:movementName",
   watchController.getWatchesByMovement,
@@ -92,18 +110,133 @@ watchRouter.get(
  *         description: Internal Server Error
  */
 watchRouter.get("/:id", watchController.findOne);
+/**
+ * @swagger
+ * /v1/api/watches/create:
+ *   post:
+ *     summary: Create a new watch
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               price:         
+ *                 type: number
+ *               description:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *               brand:
+ *                 type: string
+ *               bandMaterial:
+ *                 type: string
+ *               movement:
+ *                 type: string
+ *               material:
+ *                 type: string
+ *               gender:
+ *                 type: string
+ *               diameter:
+ *                 type: number 
+ *               waterResistance:
+ *                 type: number
+ *               warranty:
+ *                 type: number
+ *     responses:
+ *       201:
+ *         description: Created
+ *       400:
+ *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
+ */
 watchRouter.post(
   "/create",
   authMiddleware,
   adminMiddleware,
   watchController.create,
 );
+/**
+ * @swagger
+ * /v1/api/watches/update/{id}:
+ *   put:
+ *     summary: Update a watch by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:       
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               price:
+ *                 type: number 
+ *               description:
+ *                 type: string
+ *               image:
+ *                 type: string
+ *               brand:
+ *                 type: string
+ *               bandMaterial:
+ *                 type: string
+ *               movement:
+ *                 type: string
+ *               material:
+ *                 type: string
+ *               gender:
+ *                 type: string
+ *               diameter:
+ *                 type: number   
+ *               waterResistance:
+ *                 type: number
+ *               warranty:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Success
+ *       400:
+ *         description: Bad Request
+ *       404:
+ *         description: Not Found
+ *       500:
+ *         description: Internal Server Error
+ */
 watchRouter.put(
   "/update/:id",
   authMiddleware,
   adminMiddleware,
   watchController.update,
 );
+/**
+ * @swagger
+ * /v1/api/watches/delete/{id}:
+ *   delete:
+ *     summary: Delete a watch by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ *       404:
+ *         description: Not Found
+ *       500:
+ *         description: Internal Server Error
+ */
 watchRouter.delete(
   "/delete/:id",
   authMiddleware,

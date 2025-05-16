@@ -220,7 +220,7 @@ export class WatchService {
   }
 
   async getWatchesByBrand(
-    brandId: string,
+    brandSlug: string,
     page = 1,
     limit = DEFAULT_PAGE_SIZE,
   ) {
@@ -229,7 +229,9 @@ export class WatchService {
     const [watches, total] = await Promise.all([
       prisma.watch.findMany({
         where: {
-          brandId: brandId,
+          brand: {
+            slug: brandSlug,
+          },
         },
         skip,
         take: limit,
@@ -247,7 +249,9 @@ export class WatchService {
       }),
       prisma.watch.count({
         where: {
-          brandId: brandId,
+          brand: {
+            slug: brandSlug,
+          },
         },
       }),
     ]);
@@ -485,10 +489,10 @@ export class WatchService {
       page = 1,
       limit = DEFAULT_PAGE_SIZE,
     } = params;
-  
+
     const skip = (page - 1) * limit;
     const where: any = {};
-  
+
     // ✅ Search by keyword (search in watch name, brand name, etc.)
     if (keyword) {
       where.OR = [
@@ -499,7 +503,7 @@ export class WatchService {
         { movement: { name: { contains: keyword, mode: "insensitive" } } },
       ];
     }
-  
+
     // ✅ Filtering conditions
     if (brandName) {
       where.brand = {
@@ -550,7 +554,7 @@ export class WatchService {
       if (minPrice !== undefined) where.price.gte = minPrice;
       if (maxPrice !== undefined) where.price.lte = maxPrice;
     }
-  
+
     const [watches, total] = await Promise.all([
       prisma.watch.findMany({
         where,
@@ -568,9 +572,9 @@ export class WatchService {
       }),
       prisma.watch.count({ where }),
     ]);
-  
+
     const totalPages = Math.ceil(total / limit);
-  
+
     return {
       status: 200,
       message: "Watches fetched successfully",
@@ -584,5 +588,5 @@ export class WatchService {
       },
     };
   }
-  
+
 }
