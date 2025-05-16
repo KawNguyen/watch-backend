@@ -6,7 +6,11 @@ const bandMaterialService = new BandMaterialService();
 export class BandMaterialController {
   findAll = async (req: Request, res: Response) => {
     try {
-      const bandMaterials = await bandMaterialService.findAll();
+      const { page, limit } = req.query;
+      const bandMaterials = await bandMaterialService.findAll(
+        page ? Number(page) : undefined,
+        limit ? Number(limit) : undefined
+      );
       res.json(bandMaterials);
     } catch (error) {
       res.status(500).json({ message: "Error fetching band materials", error });

@@ -6,7 +6,9 @@ const movementService = new MovementService();
 export class MovementController {
   findAll = async (req: Request, res: Response) => {
     try {
-      const movements = await movementService.findAll();
+      const { page, limit } = req.query;
+      const movements = await movementService.findAll
+        (page ? Number(page) : 1, limit ? Number(limit) : 12);
       res.json(movements);
     } catch (error) {
       res.status(500).json({ message: "Error fetching movements", error });

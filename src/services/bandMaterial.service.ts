@@ -4,13 +4,13 @@ const prisma = new PrismaClient();
 const DEFAULT_PAGE_SIZE = 20;
 
 export class BandMaterialService {
-  async findAll(page = 1, pageSize = DEFAULT_PAGE_SIZE) {
-    const skip = (page - 1) * pageSize;
+  async findAll(page = 1, limit = DEFAULT_PAGE_SIZE) {
+    const skip = (page - 1) * limit;
 
     const [bandMaterials, total] = await Promise.all([
       prisma.bandMaterial.findMany({
         skip,
-        take: pageSize,
+        take: limit,
         select: {
           id: true,
           code: true,
@@ -34,14 +34,14 @@ export class BandMaterialService {
       meta: {
         total,
         page,
-        lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize,
+        lastPage: Math.ceil(total / limit),
+        itemsPerPage: limit,
       },
     };
   }
 
-  async search(name: string, page = 1, pageSize = DEFAULT_PAGE_SIZE) {
-    const skip = (page - 1) * pageSize;
+  async search(name: string, page = 1, limit = DEFAULT_PAGE_SIZE) {
+    const skip = (page - 1) * limit;
 
     const [bandMaterials, total] = await Promise.all([
       prisma.bandMaterial.findMany({
@@ -52,7 +52,7 @@ export class BandMaterialService {
           },
         },
         skip,
-        take: pageSize,
+        take: limit,
         select: {
           id: true,
           code: true,
@@ -83,8 +83,8 @@ export class BandMaterialService {
       meta: {
         total,
         page,
-        lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize,
+        lastPage: Math.ceil(total / limit),
+        itemsPerPage: limit,
       },
     };
   }

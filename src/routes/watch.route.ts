@@ -10,6 +10,8 @@ const watchController = new WatchController();
  * @swagger
  * /v1/api/watches:
  *   get:
+ *     tags:
+ *      - Watches
  *     summary: getWatches
  *     parameters:
  *       - in: query
@@ -70,6 +72,8 @@ watchRouter.get("/", watchController.getWatches);
  * @swagger
  * /v1/api/watches/brand/{brandSlug}:
  *   get:
+ *     tags:
+ *       - Watches
  *     summary: Get watches by brand
  *     parameters:
  *       - in: path
@@ -94,6 +98,8 @@ watchRouter.get(
  * @swagger
  * /v1/api/watches/{id}:
  *   get:
+ *     tags:
+ *       - Watches
  *     summary: Get a watch by ID
  *     parameters:
  *       - in: path
@@ -114,6 +120,8 @@ watchRouter.get("/:id", watchController.findOne);
  * @swagger
  * /v1/api/watches/create:
  *   post:
+ *     tags:
+ *      - Watches
  *     summary: Create a new watch
  *     requestBody:
  *       required: true
@@ -164,6 +172,8 @@ watchRouter.post(
  * @swagger
  * /v1/api/watches/update/{id}:
  *   put:
+ *     tags:
+ *      - Watches
  *     summary: Update a watch by ID
  *     parameters:
  *       - in: path
@@ -222,6 +232,8 @@ watchRouter.put(
  * @swagger
  * /v1/api/watches/delete/{id}:
  *   delete:
+ *     tags:
+ *       - Watches
  *     summary: Delete a watch by ID
  *     parameters:
  *       - in: path

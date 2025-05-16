@@ -6,7 +6,11 @@ const materialService = new MaterialService();
 export class MaterialController {
   findAll = async (req: Request, res: Response) => {
     try {
-      const materials = await materialService.findAll();
+      const { page, limit } = req.query;
+      const materials = await materialService.findAll(
+        page ? Number(page) : 1,
+        limit ? Number(limit) : 12
+      );
       res.json(materials);
     } catch (error) {
       res.status(500).json({ message: "Error fetching materials", error });

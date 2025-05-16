@@ -13,7 +13,7 @@ const options = {
         url: "http://localhost:3000"
       },
       {
-        url: "https://watch-backend-production.up.railway.app"
+        url: "https://watch-backend-3bye.onrender.com"
       }
     ],
   },

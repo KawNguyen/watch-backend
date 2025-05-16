@@ -5,13 +5,13 @@ const prisma = new PrismaClient();
 const DEFAULT_PAGE_SIZE = 20;
 
 export class MovementService {
-  async findAll(page = 1, pageSize = DEFAULT_PAGE_SIZE) {
-    const skip = (page - 1) * pageSize;
+  async findAll(page = 1, limit = DEFAULT_PAGE_SIZE) {
+    const skip = (page - 1) * limit;
 
     const [movements, total] = await Promise.all([
       prisma.movement.findMany({
         skip,
-        take: pageSize,
+        take: limit,
         select: {
           id: true,
           code: true,
@@ -35,14 +35,14 @@ export class MovementService {
       meta: {
         total,
         page,
-        lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize,
+        lastPage: Math.ceil(total / limit),
+        itemsPerPage: limit,
       },
     };
   }
 
-  async search(name: string, page = 1, pageSize = DEFAULT_PAGE_SIZE) {
-    const skip = (page - 1) * pageSize;
+  async search(name: string, page = 1, limit = DEFAULT_PAGE_SIZE) {
+    const skip = (page - 1) * limit;
 
     const [movements, total] = await Promise.all([
       prisma.movement.findMany({
@@ -53,7 +53,7 @@ export class MovementService {
           },
         },
         skip,
-        take: pageSize,
+        take: limit,
         select: {
           id: true,
           code: true,
@@ -84,8 +84,8 @@ export class MovementService {
       meta: {
         total,
         page,
-        lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize,
+        lastPage: Math.ceil(total / limit),
+        itemsPerPage: limit,
       },
     };
   }

@@ -15,7 +15,11 @@ export class BrandController {
 
   async findAll(req: Request, res: Response) {
     try {
-      const brands = await brandService.findAll();
+      const { page, limit } = req.query;
+      const brands = await brandService.findAll(
+        page ? Number(page) : 1,
+        limit ? Number(limit) : 12,
+      );
       res.json(brands);
     } catch (error: any) {
       res.status(500).json({ message: error.message });

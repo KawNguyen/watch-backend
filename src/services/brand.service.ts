@@ -26,15 +26,16 @@ export class BrandService {
     };
   }
 
-  async findAll(page = 1, pageSize = DEFAULT_PAGE_SIZE) {
-    const skip = (page - 1) * pageSize;
+  async findAll(page = 1, limit = DEFAULT_PAGE_SIZE) {
+    const skip = (page - 1) * limit;
 
     const [brands, total] = await Promise.all([
       prisma.brand.findMany({
         skip,
-        take: pageSize,
+        take: limit,
         select: {
           id: true,
+          slug:true,
           name: true,
           country: true,
           logo: true,
@@ -55,16 +56,16 @@ export class BrandService {
       meta: {
         total,
         page,
-        lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize,
+        lastPage: Math.ceil(total / limit),
+        itemsPerPage: limit,
       },
     };
   }
 
-  async search(filters: { name?: string; page?: number; pageSize?: number }) {
-    const { name, page = 1, pageSize = DEFAULT_PAGE_SIZE } = filters;
+  async search(filters: { name?: string; page?: number; limit?: number }) {
+    const { name, page = 1, limit = DEFAULT_PAGE_SIZE } = filters;
 
-    const skip = (page - 1) * pageSize;
+    const skip = (page - 1) * limit;
     const where: any = {};
 
     if (name) {
@@ -82,7 +83,7 @@ export class BrandService {
       prisma.brand.findMany({
         where,
         skip,
-        take: pageSize,
+        take: limit,
         select: {
           id: true,
           code: true,
@@ -108,8 +109,8 @@ export class BrandService {
       meta: {
         total,
         page,
-        lastPage: Math.ceil(total / pageSize),
-        itemsPerPage: pageSize,
+        lastPage: Math.ceil(total / limit),
+        itemsPerPage: limit,
       },
     };
   }
