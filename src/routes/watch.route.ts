@@ -9,7 +9,7 @@ const watchController = new WatchController();
 // Public routes
 /**
  * @swagger
- * /v1/api/watches/search:
+ * /v1/api/watches:
  *   get:
  *     summary: Search
  *     parameters:
@@ -23,10 +23,10 @@ const watchController = new WatchController();
  *       400:
  *         description: Bad Request
  */
-watchRouter.get("/search", watchController.search);
+watchRouter.get("/", watchController.search);
 /**
  * @swagger
- * /v1/api/watches/filter:
+ * /v1/api/watches:
  *   get:
  *     summary: Filter
  *     parameters:
