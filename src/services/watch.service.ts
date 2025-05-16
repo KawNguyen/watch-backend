@@ -30,44 +30,44 @@ export class WatchService {
     };
   }
 
-  async findAll(page = 1, limit = DEFAULT_PAGE_SIZE) {
-    const skip = (page - 1) * limit;
+  // async findAll(page = 1, limit = DEFAULT_PAGE_SIZE) {
+  //   const skip = (page - 1) * limit;
 
-    const [watches, total] = await Promise.all([
-      prisma.watch.findMany({
-        skip,
-        take: limit,
-        include: {
-          brand: true,
-          material: true,
-          bandMaterial: true,
-          movement: true,
-          images: true,
-        },
-        orderBy: {
-          createdAt: "desc",
-        },
-      }),
-      prisma.watch.count(),
-    ]);
+  //   const [watches, total] = await Promise.all([
+  //     prisma.watch.findMany({
+  //       skip,
+  //       take: limit,
+  //       include: {
+  //         brand: true,
+  //         material: true,
+  //         bandMaterial: true,
+  //         movement: true,
+  //         images: true,
+  //       },
+  //       orderBy: {
+  //         createdAt: "desc",
+  //       },
+  //     }),
+  //     prisma.watch.count(),
+  //   ]);
 
-    const totalPages = Math.ceil(total / limit);
+  //   const totalPages = Math.ceil(total / limit);
 
-    return {
-      status: 200,
-      message: "Watches fetched successfully",
-      data: {
-        items: watches,
-      },
-      meta: {
-        total,
-        page,
-        totalPages,
-        lastPage: totalPages,
-        itemsPerPage: limit,
-      },
-    };
-  }
+  //   return {
+  //     status: 200,
+  //     message: "Watches fetched successfully",
+  //     data: {
+  //       items: watches,
+  //     },
+  //     meta: {
+  //       total,
+  //       page,
+  //       totalPages,
+  //       lastPage: totalPages,
+  //       itemsPerPage: limit,
+  //     },
+  //   };
+  // }
 
   async findOne(id: string) {
     const watch = await prisma.watch.findUnique({
@@ -331,7 +331,132 @@ export class WatchService {
     };
   }
 
-  async filterWatches(filters: {
+  // async filterWatches(filters: {
+  //   brandName?: string;
+  //   bandMaterialName?: string;
+  //   materialName?: string;
+  //   movementName?: string;
+  //   gender?: WatchGender;
+  //   diameter?: number;
+  //   waterResistance?: number;
+  //   warranty?: number;
+  //   minPrice?: number;
+  //   maxPrice?: number;
+  //   page?: number;
+  //   limit?: number;
+  // }) {
+  //   const {
+  //     brandName,
+  //     bandMaterialName,
+  //     materialName,
+  //     movementName,
+  //     gender,
+  //     diameter,
+  //     waterResistance,
+  //     warranty,
+  //     minPrice,
+  //     maxPrice,
+  //     page = 1,
+  //     limit = DEFAULT_PAGE_SIZE,
+  //   } = filters;
+
+  //   const skip = (page - 1) * limit;
+  //   const where: any = {};
+
+  //   if (brandName) {
+  //     where.brand = {
+  //       name: {
+  //         equals: brandName,
+  //         mode: "insensitive",
+  //       },
+  //     };
+  //   }
+  //   if (bandMaterialName) {
+  //     where.bandMaterial = {
+  //       name: {
+  //         equals: bandMaterialName,
+  //         mode: "insensitive",
+  //       },
+  //     };
+  //   }
+  //   if (materialName) {
+  //     where.material = {
+  //       name: {
+  //         equals: materialName,
+  //         mode: "insensitive",
+  //       },
+  //     };
+  //   }
+  //   if (movementName) {
+  //     where.movement = {
+  //       name: {
+  //         equals: movementName,
+  //         mode: "insensitive",
+  //       },
+  //     };
+  //   }
+  //   if (gender) {
+  //     where.gender = gender as WatchGender;
+  //   }
+  //   if (diameter) {
+  //     where.diameter = diameter;
+  //   }
+  //   if (waterResistance) {
+  //     where.waterResistance = waterResistance;
+  //   }
+  //   if (warranty) {
+  //     where.warranty = warranty;
+  //   }
+  //   if (minPrice !== undefined || maxPrice !== undefined) {
+  //     where.price = {};
+  //     if (minPrice !== undefined) {
+  //       where.price.gte = minPrice;
+  //     }
+  //     if (maxPrice !== undefined) {
+  //       where.price.lte = maxPrice;
+  //     }
+  //   }
+
+  //   const [watches, total] = await Promise.all([
+  //     prisma.watch.findMany({
+  //       where,
+  //       skip,
+  //       take: limit,
+  //       include: {
+  //         brand: true,
+  //         material: true,
+  //         bandMaterial: true,
+  //         movement: true,
+  //         images: true,
+  //         quantities: true,
+  //       },
+  //       orderBy: {
+  //         createdAt: "desc",
+  //       },
+  //     }),
+  //     prisma.watch.count({ where }),
+  //   ]);
+
+  //   const totalPages = Math.ceil(total / limit);
+
+  //   return {
+  //     status: 200,
+  //     message: "Watches filtered successfully",
+  //     data: {
+  //       items: watches,
+  //     },
+  //     meta: {
+  //       total,
+  //       page,
+  //       totalPages,
+  //       lastPage: Math.ceil(total / limit),
+  //       itemsPerPage: limit,
+  //     },
+  //   };
+  // }
+
+  async getWatches(params: {
+    keyword?: string;
     brandName?: string;
     bandMaterialName?: string;
     materialName?: string;
@@ -346,6 +471,7 @@ export class WatchService {
     limit?: number;
   }) {
     const {
+      keyword,
       brandName,
       bandMaterialName,
       materialName,
@@ -358,11 +484,23 @@ export class WatchService {
       maxPrice,
       page = 1,
       limit = DEFAULT_PAGE_SIZE,
-    } = filters;
-
+    } = params;
+  
     const skip = (page - 1) * limit;
     const where: any = {};
-
+  
+    // ✅ Search by keyword (search in watch name, brand name, etc.)
+    if (keyword) {
+      where.OR = [
+        { name: { contains: keyword, mode: "insensitive" } },
+        { brand: { name: { contains: keyword, mode: "insensitive" } } },
+        { material: { name: { contains: keyword, mode: "insensitive" } } },
+        { bandMaterial: { name: { contains: keyword, mode: "insensitive" } } },
+        { movement: { name: { contains: keyword, mode: "insensitive" } } },
+      ];
+    }
+  
+    // ✅ Filtering conditions
     if (brandName) {
       where.brand = {
         name: {
@@ -396,7 +534,7 @@ export class WatchService {
       };
     }
     if (gender) {
-      where.gender = gender as WatchGender;
+      where.gender = gender;
     }
     if (diameter) {
       where.diameter = diameter;
@@ -409,14 +547,10 @@ export class WatchService {
     }
     if (minPrice !== undefined || maxPrice !== undefined) {
       where.price = {};
-      if (minPrice !== undefined) {
-        where.price.gte = minPrice;
-      }
-      if (maxPrice !== undefined) {
-        where.price.lte = maxPrice;
-      }
+      if (minPrice !== undefined) where.price.gte = minPrice;
+      if (maxPrice !== undefined) where.price.lte = maxPrice;
     }
-
+  
     const [watches, total] = await Promise.all([
       prisma.watch.findMany({
         where,
@@ -430,28 +564,25 @@ export class WatchService {
           images: true,
           quantities: true,
         },
-        orderBy: {
-          createdAt: "desc",
-        },
+        orderBy: { createdAt: "desc" },
       }),
       prisma.watch.count({ where }),
     ]);
-
+  
     const totalPages = Math.ceil(total / limit);
-
+  
     return {
       status: 200,
-      message: "Watches filtered successfully",
-      data: {
-        items: watches,
-      },
+      message: "Watches fetched successfully",
+      data: { items: watches },
       meta: {
         total,
         page,
         totalPages,
-        lastPage: Math.ceil(total / limit),
+        lastPage: totalPages,
         itemsPerPage: limit,
       },
     };
   }
+  
 }

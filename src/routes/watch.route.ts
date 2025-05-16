@@ -6,30 +6,16 @@ import { adminMiddleware } from "../middlewares/admin.middleware";
 const watchRouter = Router();
 const watchController = new WatchController();
 
-// Public routes
 /**
  * @swagger
  * /v1/api/watches:
  *   get:
- *     summary: Search
+ *     summary: getWatches
  *     parameters:
  *       - in: query
- *         name: query
+ *         name: keyword
  *         schema:
  *           type: string
- *     responses:
- *       200:
- *         description: Success
- *       400:
- *         description: Bad Request
- */
-watchRouter.get("/", watchController.search);
-/**
- * @swagger
- * /v1/api/watches:
- *   get:
- *     summary: Filter
- *     parameters:
  *       - in: query
  *         name: brand
  *         schema:
@@ -78,30 +64,9 @@ watchRouter.get("/", watchController.search);
  *       500:
  *         description: Internal Server Error
  */
-watchRouter.get("/", watchController.filterWatches);
-/**
- * @swagger
- * /v1/api/watches:
- *   get:
- *     summary: Get all watches
- *     parameters:
- *       - in: query
- *         name: page
- *         schema:
- *           type: number
- *       - in: query
- *         name: limit
- *         schema:
- *           type: number
- *     responses:
- *       200:
- *         description: Success
- *       400:
- *         description: Bad Request
- *       500:
- *         description: Internal Server Error
- */
-watchRouter.get("/", watchController.findAll);
+watchRouter.get("/", watchController.getWatches);
+
+// watchRouter.get("/", watchController.findAll);
 watchRouter.get("/brand/:brandId", watchController.getWatchesByBrand);
 watchRouter.get(
   "/movement/:movementName",

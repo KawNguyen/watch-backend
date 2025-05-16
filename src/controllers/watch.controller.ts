@@ -5,16 +5,16 @@ import { WatchGender } from "@prisma/client";
 const watchService = new WatchService();
 
 export class WatchController {
-  findAll = async (req: Request, res: Response) => {
-    try {
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 12;
-      const result = await watchService.findAll(page, limit);
-      res.json(result);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching watches", error });
-    }
-  };
+  // findAll = async (req: Request, res: Response) => {
+  //   try {
+  //     const page = parseInt(req.query.page as string) || 1;
+  //     const limit = parseInt(req.query.limit as string) || 12;
+  //     const result = await watchService.findAll(page, limit);
+  //     res.json(result);
+  //   } catch (error) {
+  //     res.status(500).json({ message: "Error fetching watches", error });
+  //   }
+  // };
 
   async findOne(req: Request, res: Response) {
     try {
@@ -56,18 +56,18 @@ export class WatchController {
     }
   }
 
-  async search(req: Request, res: Response) {
-    try {
-      const { query } = req.query;
-      const result = await watchService.search(query as string);
-      res.json(result);
-    } catch (error: any) {
-      res.status(500).json({
-        message: "Error searching watches",
-        error: error.message,
-      });
-    }
-  }
+  // async search(req: Request, res: Response) {
+  //   try {
+  //     const { query } = req.query;
+  //     const result = await watchService.search(query as string);
+  //     res.json(result);
+  //   } catch (error: any) {
+  //     res.status(500).json({
+  //       message: "Error searching watches",
+  //       error: error.message,
+  //     });
+  //   }
+  // }
 
   async getWatchesByBrand(req: Request, res: Response) {
     try {
@@ -109,9 +109,10 @@ export class WatchController {
     }
   }
 
-  async filterWatches(req: Request, res: Response) {
+  async getWatches(req: Request, res: Response) {
     try {
       const {
+        keyword,
         brand,
         bandMaterial,
         material,
@@ -127,6 +128,7 @@ export class WatchController {
       } = req.query;
 
       const filters = {
+        keyword: keyword as string,
         brandName: brand as string,
         bandMaterialName: bandMaterial as string,
         materialName: material as string,
@@ -143,7 +145,7 @@ export class WatchController {
         limit: limit ? Number(limit) : undefined,
       };
 
-      const result = await watchService.filterWatches(filters);
+      const result = await watchService.getWatches(filters);
       res.status(result.status).json(result);
     } catch (error: any) {
       res.status(400).json({
