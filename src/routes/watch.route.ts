@@ -38,14 +38,17 @@ const watchController = new WatchController();
  *         name: gender
  *         schema:
  *           type: string
+ *           enum: [MEN, WOMEN, UNISEX]         
  *       - in: query
- *         name: diameter
+ *         name: diameterRange
  *         schema:
- *           type: number
+ *           type: string
+ *           enum: ["0-20", "20-40", "40-60"]           
  *       - in: query
- *         name: waterResistance
+ *         name: waterResistanceRange
  *         schema:
- *           type: number
+ *           type: string
+ *           enum: ["0-20", "20-40", "40-60", "60-80", "80-100"]
  *       - in: query
  *         name: warranty
  *         schema:
@@ -58,6 +61,14 @@ const watchController = new WatchController();
  *         name: maxPrice
  *         schema:
  *           type: number
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
  *         description: Success

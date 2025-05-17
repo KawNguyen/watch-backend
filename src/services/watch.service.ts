@@ -466,8 +466,8 @@ export class WatchService {
     materialName?: string;
     movementName?: string;
     gender?: WatchGender;
-    diameter?: number;
-    waterResistance?: number;
+    diameterRange?: string; 
+    waterResistanceRange?: string; 
     warranty?: number;
     minPrice?: number;
     maxPrice?: number;
@@ -481,30 +481,37 @@ export class WatchService {
       materialName,
       movementName,
       gender,
-      diameter,
-      waterResistance,
+      diameterRange,
+      waterResistanceRange,
       warranty,
       minPrice,
       maxPrice,
       page = 1,
       limit = DEFAULT_PAGE_SIZE,
     } = params;
-
+  
     const skip = (page - 1) * limit;
     const where: any = {};
-
-    // ✅ Search by keyword (search in watch name, brand name, etc.)
+  
     if (keyword) {
       where.OR = [
-        { name: { contains: keyword, mode: "insensitive" } },
-        { brand: { name: { contains: keyword, mode: "insensitive" } } },
-        { material: { name: { contains: keyword, mode: "insensitive" } } },
-        { bandMaterial: { name: { contains: keyword, mode: "insensitive" } } },
-        { movement: { name: { contains: keyword, mode: "insensitive" } } },
+        {
+          name: {
+            contains: keyword,
+            mode: "insensitive",
+          },
+        },
+        {
+          brand: {
+            name: {
+              contains: keyword,
+              mode: "insensitive",
+            },
+          },
+        },
       ];
     }
-
-    // ✅ Filtering conditions
+  
     if (brandName) {
       where.brand = {
         name: {
@@ -513,6 +520,7 @@ export class WatchService {
         },
       };
     }
+  
     if (bandMaterialName) {
       where.bandMaterial = {
         name: {
@@ -521,6 +529,7 @@ export class WatchService {
         },
       };
     }
+  
     if (materialName) {
       where.material = {
         name: {
@@ -529,6 +538,7 @@ export class WatchService {
         },
       };
     }
+  
     if (movementName) {
       where.movement = {
         name: {
@@ -537,24 +547,37 @@ export class WatchService {
         },
       };
     }
+  
     if (gender) {
       where.gender = gender;
     }
-    if (diameter) {
-      where.diameter = diameter;
+  
+    if (diameterRange) {
+      const [min, max] = diameterRange.split("-").map(Number);
+      where.diameter = {
+        ...(min && { gte: min }),
+        ...(max && { lte: max }),
+      };
     }
-    if (waterResistance) {
-      where.waterResistance = waterResistance;
+  
+    if (waterResistanceRange) {
+      const [min, max] = waterResistanceRange.split("-").map(Number);
+      where.waterResistance = {
+        ...(min && { gte: min }),
+        ...(max && { lte: max }),
+      };
     }
+  
     if (warranty) {
       where.warranty = warranty;
     }
+  
     if (minPrice !== undefined || maxPrice !== undefined) {
       where.price = {};
       if (minPrice !== undefined) where.price.gte = minPrice;
       if (maxPrice !== undefined) where.price.lte = maxPrice;
     }
-
+  
     const [watches, total] = await Promise.all([
       prisma.watch.findMany({
         where,
@@ -568,17 +591,21 @@ export class WatchService {
           images: true,
           quantities: true,
         },
-        orderBy: { createdAt: "desc" },
+        orderBy: {
+          createdAt: "desc",
+        },
       }),
       prisma.watch.count({ where }),
     ]);
-
+  
     const totalPages = Math.ceil(total / limit);
-
+  
     return {
       status: 200,
       message: "Watches fetched successfully",
-      data: { items: watches },
+      data: {
+        items: watches,
+      },
       meta: {
         total,
         page,
@@ -588,5 +615,6 @@ export class WatchService {
       },
     };
   }
+  
 
 }

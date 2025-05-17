@@ -94,8 +94,8 @@ export class WatchController {
         material,
         movement,
         gender,
-        diameter,
-        waterResistance,
+        diameterRange,
+        waterResistanceRange,
         warranty,
         minPrice,
         maxPrice,
@@ -112,8 +112,8 @@ export class WatchController {
         gender: gender
           ? ((gender as string).toUpperCase() as WatchGender)
           : undefined,
-        diameter: diameter ? Number(diameter) : undefined,
-        waterResistance: waterResistance ? Number(waterResistance) : undefined,
+        diameterRange: diameterRange as string,
+        waterResistanceRange: waterResistanceRange as string,
         warranty: warranty ? Number(warranty) : undefined,
         minPrice: minPrice ? Number(minPrice) : undefined,
         maxPrice: maxPrice ? Number(maxPrice) : undefined,
